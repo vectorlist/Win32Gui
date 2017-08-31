@@ -18,6 +18,31 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\config\brush.h" />
+    <ClInclude Include="..\include\config\config.h" />
+    <ClInclude Include="..\include\config\log.h" />
+    <ClInclude Include="..\include\config\macroconfig.h" />
+    <ClInclude Include="..\include\config\platformconfig.h" />
+    <ClInclude Include="..\include\config\point.h" />
+    <ClInclude Include="..\include\config\stdconfig.h" />
+    <ClInclude Include="..\include\config\typeconfig.h" />
+    <ClInclude Include="..\include\config\win32utils.h" />
+    <ClInclude Include="src\application.h" />
+    <ClInclude Include="src\layout.h" />
+    <ClInclude Include="src\mainwindow.h" />
+    <ClInclude Include="src\widget.h" />
+    <ClInclude Include="src\window.h" />
+    <ClInclude Include="src\winutils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\application.cpp" />
+    <ClCompile Include="src\layout.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mainwindow.cpp" />
+    <ClCompile Include="src\widget.cpp" />
+    <ClCompile Include="src\window.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{da44c276-22f3-480f-b0f7-a8dbc47641dd}</ProjectGuid>
     <RootNamespace>Win32Gui</RootNamespace>
@@ -69,8 +94,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)\intermediate\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediate\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,28 +141,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\application.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\mainframe.cpp" />
-    <ClCompile Include="src\window.cpp" />
-    <ClCompile Include="src\winthread.cpp" />
-    <ClCompile Include="src\winutils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\include\config\config.h" />
-    <ClInclude Include="..\include\config\macroconfig.h" />
-    <ClInclude Include="..\include\config\platformconfig.h" />
-    <ClInclude Include="..\include\config\stdconfig.h" />
-    <ClInclude Include="..\include\config\typeconfig.h" />
-    <ClInclude Include="src\application.h" />
-    <ClInclude Include="src\brush.h" />
-    <ClInclude Include="src\mainframe.h" />
-    <ClInclude Include="src\window.h" />
-    <ClInclude Include="src\winthread.h" />
-    <ClInclude Include="src\wintls.h" />
-    <ClInclude Include="src\winutils.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
