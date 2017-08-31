@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{525f4cb4-ea62-4610-9f7a-2224e7fdb6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{d94dd9d9-20fd-4b5b-a8c0-de767ffce272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\windowframe">
+      <UniqueIdentifier>{0fae00b8-6128-455e-980b-b05f06cd46d9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\winutils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\winthread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mainframe.cpp">
+      <Filter>src\windowframe</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\config\platformconfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config\stdconfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config\typeconfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config\config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config\macroconfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\winutils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\winthread.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wintls.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\brush.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mainframe.h">
+      <Filter>src\windowframe</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
