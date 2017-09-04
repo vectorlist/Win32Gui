@@ -58,7 +58,7 @@ int main(int args, char* argv[])
 	Application app;
 
 	MainWindow w(700,300,1024,480);
-	Frame f(100, 100, 200, 200,"frame", w);
+	Widget f(100, 100, 200, 200,"frame", w);
 
 	w.Show();
 	

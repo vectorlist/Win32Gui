@@ -19,6 +19,9 @@
     <Filter Include="config">
       <UniqueIdentifier>{d94dd9d9-20fd-4b5b-a8c0-de767ffce272}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\win32">
+      <UniqueIdentifier>{4a6d96f6-5971-4794-93c9-e7da05b5172b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\config\stdconfig.h">
@@ -60,14 +63,17 @@
     <ClInclude Include="..\include\config\rect.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="src\windowobject.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\window.h">
-      <Filter>src</Filter>
+      <Filter>src\win32</Filter>
     </ClInclude>
     <ClInclude Include="src\painter.h">
-      <Filter>src</Filter>
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\winobject.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wincore.h">
+      <Filter>src\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,10 +90,13 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\window.cpp">
-      <Filter>src</Filter>
+      <Filter>src\win32</Filter>
     </ClCompile>
-    <ClCompile Include="src\windowobject.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\winobject.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wincore.cpp">
+      <Filter>src\win32</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

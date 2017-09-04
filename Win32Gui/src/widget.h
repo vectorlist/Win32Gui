@@ -1,45 +1,17 @@
 #pragma once
 
-#include <config.h>
-#include <layout.h>
+#include <window.h>
 
-class WinObject
+class Widget : public Window
 {
 public:
-	WinObject(HWND parent) : mHandle(NULL), mParent(parent){}
+	Widget(HWND parent = NULL);
+	Widget(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
+	virtual~Widget();
 
-	HWND GetHandle() { return mHandle; }
-	HWND GetParent() { return mParent; }
-	void SetHandle(HWND handle) { mHandle = handle; }
-	operator HWND() { return mHandle; }
-private:
-	HWND mHandle;
-	HWND mParent;
-};
-
-class Widget : public WinObject
-{
-public:
-	Widget(int width, int height, const std::wstring &title = TEXT("none"), HWND parent = NULL);
-	~Widget();
-
-	void Update();
-	void CreateClass(HWND parent);
-	void CreateWidget(HWND parent);
-	void SetBackgroundBrush();
-	void Show(int cmd = TRUE);
-
-	Layout* GetLayout() { return mLayout.get(); };
 protected:
-	static LRESULT CALLBACK GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
-	void PaintEvent();
-
-	std::unique_ptr<Layout>		mLayout;
-	const wchar_t*				mTitle;
-	int							mWidth;
-	int							mHeight;
-	bool						mIsSplitterMove;
-	HWND						mSplitterHandle;
-	bool						mOnHoover = false;
+	virtual void PreRegisterClass(WNDCLASS &wc) override;
+	virtual void PreCreateStruct(CREATESTRUCT &cs) override;
+	virtual void PaintEvent(Painter* painter) override;
 };
 

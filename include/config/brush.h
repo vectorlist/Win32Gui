@@ -29,6 +29,7 @@ struct Brush
 
 	//assign conversation with HBRUSH
 	operator HBRUSH();
+	operator HBRUSH() const;
 
 	COLORREF GetColor() const;
 
@@ -53,6 +54,12 @@ inline Brush::operator HBRUSH()
 {
 	return mBrush;
 }
+
+inline Brush::operator HBRUSH() const
+{
+	return mBrush;
+}
+
 
 inline Brush::~Brush()
 {

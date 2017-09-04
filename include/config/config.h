@@ -14,6 +14,7 @@
 #include <Point.h>
 #include <rect.h>
 #include <painter.h>
+#include <wincore.h>
 #include <win32utils.h>
 
 #include <log.h>

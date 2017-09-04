@@ -1,11 +1,11 @@
-#include <windowobject.h>
+#include <winobject.h>
 
-WindowObject::WindowObject(HWND parent)
+WinObject::WinObject(HWND parent)
 	: mParent(parent), mHandle(NULL)
 {
 }
 
-WindowObject::~WindowObject()
+WinObject::~WinObject()
 {
 	if (mHandle) {
 		DestroyWindow(mHandle);
@@ -13,37 +13,42 @@ WindowObject::~WindowObject()
 	}
 }
 
-void WindowObject::Show()
+void WinObject::Show()
 {
 	ShowWindow(*this, TRUE);
 	UpdateWindow(*this);
 }
 
-void WindowObject::Hide()
+void WinObject::Hide()
 {
 	ShowWindow(*this, FALSE);
 }
 
-void WindowObject::SetWindowName(const std::string &name)
+void WinObject::SetWindowName(const std::string &name)
 {
 	mWindowName = name;
 }
 
-std::wstring WindowObject::GetWideWindowName() const
+std::wstring WinObject::GetWideWindowName() const
 {
 	std::wstring wide;
 	wide.assign(mWindowName.begin(), mWindowName.end());
 	return wide;
 }
 
-Rect WindowObject::GetRect() const
+Rect WinObject::GetRect() const
 {
 	Rect rect;
 	GetClientRect(mHandle, &rect);
 	return rect;
 }
 
-HWND WindowObject::GetHandle() const
+HWND WinObject::GetHandle() const
 {
 	return mHandle;
+}
+
+Rect WinObject::GetActiveRect()
+{
+	return Rect();
 }

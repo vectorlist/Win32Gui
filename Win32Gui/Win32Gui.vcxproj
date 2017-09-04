@@ -30,19 +30,21 @@
     <ClInclude Include="..\include\config\typeconfig.h" />
     <ClInclude Include="..\include\config\win32utils.h" />
     <ClInclude Include="src\application.h" />
+    <ClInclude Include="src\wincore.h" />
     <ClInclude Include="src\layout.h" />
     <ClInclude Include="src\painter.h" />
     <ClInclude Include="src\window.h" />
     <ClInclude Include="src\widget.h" />
-    <ClInclude Include="src\windowobject.h" />
+    <ClInclude Include="src\winobject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\layout.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\widget.cpp" />
+    <ClCompile Include="src\wincore.cpp" />
     <ClCompile Include="src\window.cpp" />
-    <ClCompile Include="src\windowobject.cpp" />
+    <ClCompile Include="src\winobject.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{da44c276-22f3-480f-b0f7-a8dbc47641dd}</ProjectGuid>

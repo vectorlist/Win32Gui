@@ -1,11 +1,11 @@
 #pragma once
 #include <config.h>
 
-class WindowObject
+class WinObject
 {
 public:
-	WindowObject(HWND parent);
-	virtual~WindowObject();
+	WinObject(HWND parent);
+	virtual~WinObject();
 
 	void			Show();
 	void			Hide();
@@ -25,6 +25,7 @@ public:
 
 	operator HWND()							{ return mHandle; }
 protected:
+	virtual Rect	GetActiveRect();
 	HWND			mHandle;
 	HWND			mParent;
 

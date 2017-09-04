@@ -2,14 +2,14 @@
 #include <application.h>
 
 Window::Window(HWND parent)
-	: WindowObject(parent)
+	: WinObject(parent)
 {
 	SetWindowName("none");
 	//Create(parent);
 }
 
 Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
-	: WindowObject(parent)
+	: WinObject(parent)
 {
 	SetWindowName(title);
 	SetX(x); SetY(y); SetWidth(w), SetHeight(h);
@@ -30,7 +30,7 @@ void Window::Create(HWND parent)
 	wc.hInstance = App->GetInstance();
 	wc.hbrBackground = b;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.lpfnWndProc = GlobalWndProc;
+	wc.lpfnWndProc = Window::GlobalWndProc;
 	wc.lpszClassName = TEXT("win32++");
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpszMenuName = NULL;
@@ -83,11 +83,12 @@ void Window::PreCreateStruct(CREATESTRUCT &cs)
 
 void Window::InitializeEvent(CREATESTRUCT &cs)
 {
+	UNUSED(cs);
 }
 
 void Window::PaintEvent(Painter* painter)
 {
-	
+	UNUSED(painter);
 }
 
 void Window::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
@@ -110,6 +111,7 @@ LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 {
 	Painter painter;
+	
 	switch (msg)
 	{
 	case WM_CREATE:		InitializeEvent(*(CREATESTRUCT*)lp); break;
@@ -121,6 +123,7 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		painter.End(*this);
 		break;
 	}
+	//case WM_MOUSEMOVE:	return HitEvent(msg, wp, lp);
 	case WM_NCHITTEST:	return HitEvent(msg, wp, lp);
 	case WM_KEYDOWN:	KeyPressEvent(wp); break;
 	}
@@ -144,38 +147,7 @@ LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 	return DefWindowProc(handle, msg, wp, lp);
 }
 
-Frame::Frame(HWND parent)
-	: Window(parent)
-{
-	Create(parent);
-}
 
-Frame::Frame(int x, int y, int w, int h, std::string title, HWND parent)
-	: Window(x, y, w, h, title, parent)
-{
-	Create(parent);
-}
-
-Frame::~Frame()
-{
-}
-
-void Frame::PreRegisterClass(WNDCLASS &wc)
-{
-	static Brush b(100, 130, 160);
-	wc.lpszClassName = TEXT("frame");
-	wc.hbrBackground = b;
-}
-
-void Frame::PreCreateStruct(CREATESTRUCT &cs)
-{
-	cs.style = cs.style | WS_VISIBLE;
-}
-
-void Frame::PaintEvent(Painter *painter)
-{
-	LOG << "frame paint" << ENDN;
-}
 
 MainWindow::MainWindow(HWND parent)
 	: Window(parent)
@@ -208,30 +180,29 @@ void MainWindow::PreCreateStruct(CREATESTRUCT &cs)
 void MainWindow::PaintEvent(Painter * painter)
 {
 	auto rect = GetRect();
-	static Brush b(150, 130, 110);
-	painter->FillRect(rect, b);
+	static Brush b(45, 45, 45);
+	painter->SetBrush(b);
+	painter->FillRect(rect);
+
+	if (mTitlebar.GetActive()) {
+		mTitlebar.PaintEvent(*this, painter);
+	}
+
 	painter->SetTextColor(RGB(200, 200, 200));
-	painter->SetTextBgColor(b.GetColor());
+	painter->SetTextBgColor(painter->brush->GetColor());
 	painter->Text(10, 10, TEXT("Hellow"));
 }
 
 HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 {
-	int border = 10;
-	Point pos;
-	GetCursorPos(&pos);
-	ScreenToClient(*this, &pos);
-
-	auto rect = GetRect();
-
-	bool hitLeft = pos.x >= rect.left && pos.x <= rect.left + border;
-	if (hitLeft) {
-
-		return HTLEFT;
+	HRESULT result = LNULL;
+	if (mResizer.GetActive()) {
+		result = mResizer.HitEvent(this, lp);
 	}
-		
-
-	LOG << hitLeft << " "<< pos<< ENDN;
-
-	return E_NOTIMPL;
+	if (mTitlebar.GetActive()) {
+		mTitlebar.HitEvent(this, lp);
+	}
+	return result;
 }
+
+
