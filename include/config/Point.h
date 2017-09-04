@@ -6,39 +6,33 @@
 #include <assert.h>
 #include <ostream>
 
-struct Point
+class Point : public POINT
 {
-	Point() : x(0), y(0){ }
-	//dont allow int,unsigned
-	explicit Point(LONG x, LONG y) : x(x), y(y){}
+public:
+	Point()				{ x = 0; y = 0; }
+	Point(int x, int y) { this->x = x; this->y = y; }
+	Point(POINT point)  { x = point.x; y = point.y; }
+	Point(LPARAM lp)	{ x = (short)LOWORD(lp); y = (short)HIWORD(lp); }
 
-	operator POINT() {
-		return POINT{ x,y };
-	}
-	
-	LONG& operator[](uint32 i)
-	{
-		assert(0 <= i && 1 >= 1);
-		return (&x)[i];
-	}
-
-	LONG operator[](uint32 i) const
-	{
-		assert(0 <= i && 1 >= 1);
-		return (&x)[i];
-	}
-
-	LONG x,y;
-	friend std::ostream& operator<<(std::ostream& os, const Point &p)
-	{
-		os << "Point(" << p.x << ", " << p.x << ")";
-		return os;
-	}
+	operator POINT() { return *this; }
 };
+
 
 inline std::ostream& operator<<(std::ostream& os, const POINT &p)
 {
 	os << "Point(" << p.x << ", " << p.y << ")";
 	return os;
 }
+
+class Size : public SIZE
+{
+public:
+	Size() { cx = 0; cy = 0; }
+	Size(int x, int y) { cx = x; cy = y; }
+
+	operator SIZE() { return *this; }
+	operator LPSIZE() { return this; }
+
+	bool operator==(const Size &s) { return cx == s.cx && cy == s.cy; }
+};
 

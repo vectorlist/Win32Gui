@@ -1,56 +1,66 @@
 #pragma once
 
-#include <config.h>
+#include <windowobject.h>
 
-struct PaintEvent
+struct Event
 {
-	HDC dc;
+	UINT msg;
+	WPARAM wp;
+	LPARAM lp;
 };
 
-class Window
+#define WMU_WINDOWCREATED		::RegisterWindowMessage(TEXT("WMU_WINDOWCREATED"))
+#define WMU_UPDATED				::RegisterWindowMessage(TEXT("WMU_UPDATED"))
+
+class Window : public WindowObject
 {
 public:
-	Window(Window* parent = NULL);
-	Window(const std::wstring &name, Window* parent = NULL);
+	Window(HWND parent = NULL);
+	Window(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
 	virtual~Window();
 
-	virtual void	BuildWindow();
-
-	void			Show(int cmd = SW_SHOW);
-	RECT			GetRect() const;
-	Window*			GetParent() { return mParent; }
-	HWND			GetHandle() { return mHandle; }
-	void			SetSize(int width, int height) 
-	{ 
-		mWidth = width;
-		mHeight = height;
-	}
-
-	void			SetPosition(int x, int y)
-	{
-		mPos.x = x;
-		mPos.y = y;
-	}
-
-	static HRESULT CALLBACK MainWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
-
-	HWND			mHandle;
+	virtual void Create(HWND parent);
 protected:
-	virtual void OnCreate();
-	virtual void OnPaint(PaintEvent &e);
-	virtual void TitleEvent();
-	virtual void PreRegisterClassEx(WNDCLASSEX &wc);
+	//PRE CREATE
+	virtual void PreRegisterClass(WNDCLASS &wc);
+	virtual void PreCreateStruct(CREATESTRUCT &cs);
 
-	virtual HRESULT LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
-private:
+	virtual void InitializeEvent(CREATESTRUCT& cs);
+	virtual void PaintEvent(Painter* painter);
+	virtual void ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
+	virtual void KeyPressEvent(WPARAM wp);
+	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
-	std::wstring	mName;
-	Window*			mParent;
-	//HWND			mHandle;
-	HWND			mParentHandle;
+	LRESULT CALLBACK		LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
+	static LRESULT CALLBACK	GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
 
-	WindowRect		mWindowRect;
-	Point			mPos;
-	int				mWidth;
-	int				mHeight;
 };
+
+class MainWindow : public Window
+{
+public:
+	MainWindow(HWND parent = NULL);
+	MainWindow(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
+	virtual~MainWindow();
+
+protected:
+	virtual void PreRegisterClass(WNDCLASS &wc);
+	virtual void PreCreateStruct(CREATESTRUCT &cs);
+	virtual void PaintEvent(Painter* painter) override;
+	virtual HRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
+};
+
+
+class Frame : public Window
+{
+public:
+	Frame(HWND parent = NULL);
+	Frame(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
+	virtual~Frame();
+
+protected:
+	virtual void PreRegisterClass(WNDCLASS &wc);
+	virtual void PreCreateStruct(CREATESTRUCT &cs);
+	virtual void PaintEvent(Painter* painter) override;
+};
+

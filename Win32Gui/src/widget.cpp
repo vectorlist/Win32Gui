@@ -22,7 +22,8 @@ Widget::~Widget()
 
 void Widget::Update()
 {
-	
+	mLayout->Update();
+	//this->PaintEvent();
 }
 
 void Widget::CreateClass(HWND parent)
@@ -62,36 +63,75 @@ void Widget::CreateWidget(HWND parent)
 	}
 	else {
 		handle = CreateWindowEx(NULL, widgetClassName, mTitle,
-			WS_OVERLAPPED | WS_VISIBLE, CENTER_X(mWidth), CENTER_Y(mHeight), mWidth, mHeight,
+			WS_OVERLAPPED | WS_THICKFRAME | WS_VISIBLE, CENTER_X(mWidth), CENTER_Y(mHeight), mWidth, mHeight,
 			NULL, NULL, App->GetInstance(), this);
 	}
 }
 
-//void Widget::SetLayout(Layout *layout)
-//{
-//	if (mLayout) mLayout.reset();
-//	mLayout = std::make_unique<Layout>(layout);
-//	mLayout->CreateLayout(*this);
-//}
+void Widget::SetBackgroundBrush()
+{
+
+}
+
+void Widget::Show(int cmd)
+{
+	ShowWindow(*this, cmd);
+	SendMessage(*this, WM_SIZE, NULL, NULL);
+}
+
 
 LRESULT CALLBACK Widget::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 {
+	Widget* widget = (Widget*)GetWindowLongPtr(handle, GWLP_USERDATA);
+
 	switch (msg)
 	{
 	case WM_NCCREATE:
 	{
 		CREATESTRUCT* crs = (CREATESTRUCT*)lp;
-		Widget* widget = (Widget*)crs->lpCreateParams;
+		widget = (Widget*)crs->lpCreateParams;
 		widget->SetHandle(handle);
 		SetWindowLongPtr(handle, GWLP_USERDATA, (LONG_PTR)widget);
 	}
-
-	case WM_SIZE:
-		Widget* widget = (Widget*)GetWindowLongPtr(handle, GWLP_USERDATA);
-		if (widget && widget->GetLayout()) {
-			Layout* layout = widget->GetLayout();
-			layout->Update();
-		}
+	case WM_CREATE:
+		
+		break;
+	case WM_PAINT:
+	{
+		break;
 	}
+	case WM_SIZE:
+		//Widget* widget = (Widget*)GetWindowLongPtr(handle, GWLP_USERDATA);
+		if (widget && widget->GetLayout()) {
+			LOG << "widget update" << ENDN;
+			widget->Update();
+		}
+	case WM_NCHITTEST:
+	{
+		/*LOG << "widget hit" << ENDN;*/
+		Point p;
+		Rect rect;
+		GetCursorPos(&p);
+		GetClientRect(*widget, &rect);
+
+		widget->mOnHoover = win::IsPointOnRect(p, rect);
+		LOG << widget->mOnHoover << " " <<rect << ENDN;
+		widget->PaintEvent();
+		//break;
+	}
+	}
+	
 	return DefWindowProc(handle, msg, wp, lp);
+}
+
+void Widget::PaintEvent()
+{
+	PAINTSTRUCT ps;
+	HDC dc = BeginPaint(*this, &ps);
+	RECT rect;
+
+	GetClientRect(*this, &rect);
+	static Brush inB(120, 100, 90);
+	static Brush outB(70, 50, 30);
+	FillRect(dc, &rect, mOnHoover ? inB : outB);
 }

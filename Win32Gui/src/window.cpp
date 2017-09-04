@@ -1,153 +1,237 @@
-#include "window.h"
+#include <window.h>
 #include <application.h>
 
-
-Window::Window(Window* parent)
-	: mParent(parent), mName(TEXT("none"))
+Window::Window(HWND parent)
+	: WindowObject(parent)
 {
-
-	//BuildWindow();
+	SetWindowName("none");
+	//Create(parent);
 }
 
-Window::Window(const std::wstring &name, Window* parent)
-	: mParent(parent),mName(name)
+Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
+	: WindowObject(parent)
 {
-
-	//BuildWindow();
-	mWidth = 1028;
-	mHeight = 600;
-
-	mPos.x = CENTER_X(mWidth);
-	mPos.y = CENTER_Y(mHeight);
+	SetWindowName(title);
+	SetX(x); SetY(y); SetWidth(w), SetHeight(h);
+	//Create(parent);
 }
+
 
 Window::~Window()
 {
-	DestroyWindow(mHandle);
-	UnregisterClass(mName.c_str(), App->GetInstance());
 }
 
-void Window::BuildWindow()
+void Window::Create(HWND parent)
 {
-	WNDCLASSEX wc{};
+	if (!App) LOG_FATAL("application is not running");
 
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
+	WNDCLASS wc{};
+	static Brush b(100, 100, 100);
 	wc.hInstance = App->GetInstance();
-	wc.hIcon = NULL;
+	wc.hbrBackground = b;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = CreateSolidBrush(RGB(50, 50, 50));
-	wc.lpszClassName = mName.c_str();
-	wc.lpfnWndProc = MainWndProc;
-	//wc.cbWndExtra
-	this->PreRegisterClassEx(wc);
+	wc.lpfnWndProc = GlobalWndProc;
+	wc.lpszClassName = TEXT("win32++");
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpszMenuName = NULL;
 
-	if (!RegisterClassEx(&wc)) {
-		LOG_FATAL("faile to register class");
-	}
+	PreRegisterClass(wc);
 
-	mWindowRect.x = mPos.x;
-	mWindowRect.y = mPos.y;
-	mWindowRect.width = mWidth;
-	mWindowRect.height = mHeight;
-
-	
-	mParentHandle = mParent ? mParent->GetHandle() : NULL;
-	
-	if (mParent) {
-		/*mHandle = win::CreateWindowHandleEx(NULL, mName.c_str(), mName.c_str(),
-			WS_CHILD | WS_VISIBLE | BS_OWNERDRAW | WS_THICKFRAME,
-			mWindowRect, mParentHandle, App->GetInstance(), this);*/
-		mHandle = win::CreateWindowHandleEx(NULL, mName.c_str(), mName.c_str(),
-			WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-			mWindowRect, mParentHandle, (HMENU)0, App->GetInstance(), this);
+	if (GetClassInfo(App->GetInstance(), wc.lpszClassName, &wc)) {
+		LOG << "has already" << ENDN;
 	}
 	else {
-		mHandle = win::CreateWindowHandleEx(NULL, mName.c_str(), mName.c_str(),
-			WS_POPUP | WS_SIZEBOX,
-			mWindowRect, mParentHandle, NULL, App->GetInstance(), this);
-	}
-	
-}
-
-void Window::Show(int cmd)
-{
-	::ShowWindow(mHandle, cmd);
-	::UpdateWindow(mHandle);
-}
-
-RECT Window::GetRect() const
-{
-	RECT rc;
-	::GetClientRect(mHandle, &rc);
-	return rc;
-}
-
-HRESULT CALLBACK Window::MainWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
-{
-	Window* window = App->GetWindowFromHandle(handle);
-	
-	if (msg == WM_NCCREATE)
-	{
-		CREATESTRUCT* pCreate = (CREATESTRUCT*)lp;
-		window = (Window*)pCreate->lpCreateParams;
-		window->mHandle = handle;
-		SetWindowLongPtr(handle, GWLP_USERDATA, (LONG)pCreate->lpCreateParams);
-		App->SetWindowMap(handle, window);
-	}
-	if (msg == WM_CREATE)
-	{
-		window->OnCreate();
+		if (!RegisterClass(&wc))
+			LOG_FATAL("failed to register window class");
 	}
 
-	if (!window)
-		return DefWindowProc(handle, msg, wp, lp);
+	CREATESTRUCT cs{};
+	DWORD singleStyle = WS_OVERLAPPED | WS_THICKFRAME | WS_VISIBLE;
+	DWORD childStyle = WS_CHILD | WS_VISIBLE;
+	cs.style = parent ? childStyle : singleStyle;
 
-	return window->LocalWndProc(msg, wp, lp);
+	cs.x = GetX();
+	cs.y = GetY();
+	cs.cx = GetWidth();
+	cs.cy = GetHeight();
+
+	cs.lpCreateParams = this;
+
+	cs.style &= ~WS_VISIBLE;
+	PreCreateStruct(cs);
+	mHandle = CreateWindowEx(NULL,
+		wc.lpszClassName, GetWideWindowName().c_str(), cs.style,
+		cs.x, cs.y, cs.cx, cs.cy, parent, NULL, App->GetInstance(), cs.lpCreateParams);
 }
 
-void Window::OnCreate()
-{
-
-}
-
-void Window::OnPaint(PaintEvent &e)
-{
-	auto trect = win::GetTitleRect(mHandle, 30);
-	static Brush titleBrush(80, 80, 80);
-	FillRect(e.dc, &trect, titleBrush);
-	//if (mParent)
-	//{
-	//	RECT rect;
-	//	HBRUSH brush = CreateSolidBrush(RGB(150,120,80));
-	//	GetClientRect(mHandle, &rect);
-	//	LOG << rect << ENDN;
-	//	FillRect(e.dc, &rect, brush);
-	//}
-}
-
-void Window::TitleEvent()
-{
-}
-
-void Window::PreRegisterClassEx(WNDCLASSEX &wc)
+/*
+* fixable register class by derived class
+* cursor, class name, background, wndproc ..etc
+*/
+void Window::PreRegisterClass(WNDCLASS &wc)
 {
 	UNUSED(wc);
 }
-
-HRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
+/*
+* fixable create struct by derived class
+* cs.x....cs.cy, cs.style
+*/
+void Window::PreCreateStruct(CREATESTRUCT &cs)
 {
-	PaintEvent pe;
-	PAINTSTRUCT ps;
+	UNUSED(cs);
+}
 
+void Window::InitializeEvent(CREATESTRUCT &cs)
+{
+}
+
+void Window::PaintEvent(Painter* painter)
+{
+	
+}
+
+void Window::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
+{
+	LOG << "resize" << ENDN;
+}
+
+void Window::KeyPressEvent(WPARAM wp)
+{
+	if (wp == VK_ESCAPE) {
+		PostQuitMessage(0);
+	}
+}
+
+LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
+{
+	return LNULL;
+}
+
+LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
+{
+	Painter painter;
 	switch (msg)
 	{
-	case WM_PAINT:
-		pe.dc = BeginPaint(mHandle, &ps);
-		OnPaint(pe);
-		EndPaint(mHandle, &ps);
+	case WM_CREATE:		InitializeEvent(*(CREATESTRUCT*)lp); break;
+	case WM_SIZE:		ResizeEevnt(msg, wp, lp); break;
+	case WM_PAINT: 
+	{
+		painter.Begin(*this);
+		PaintEvent(&painter); 
+		painter.End(*this);
 		break;
 	}
+	case WM_NCHITTEST:	return HitEvent(msg, wp, lp);
+	case WM_KEYDOWN:	KeyPressEvent(wp); break;
+	}
+	return DefWindowProc(*this, msg, wp, lp);
+}
 
-	return DefWindowProc(mHandle,msg,wp,lp);
+LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
+{
+	Window* window = (Window*)GetWindowLongPtr(handle, GWL_USERDATA);
+	
+	if (WM_NCCREATE == msg)
+	{
+		window = (Window*)((CREATESTRUCT*)lp)->lpCreateParams;
+		window->mHandle = handle;
+		SetWindowLongPtr(handle, GWL_USERDATA, (LONG_PTR)window);
+	}
+	
+	if (window) {
+		return window->LocalWndProc(msg, wp, lp);
+	}
+	return DefWindowProc(handle, msg, wp, lp);
+}
+
+Frame::Frame(HWND parent)
+	: Window(parent)
+{
+	Create(parent);
+}
+
+Frame::Frame(int x, int y, int w, int h, std::string title, HWND parent)
+	: Window(x, y, w, h, title, parent)
+{
+	Create(parent);
+}
+
+Frame::~Frame()
+{
+}
+
+void Frame::PreRegisterClass(WNDCLASS &wc)
+{
+	static Brush b(100, 130, 160);
+	wc.lpszClassName = TEXT("frame");
+	wc.hbrBackground = b;
+}
+
+void Frame::PreCreateStruct(CREATESTRUCT &cs)
+{
+	cs.style = cs.style | WS_VISIBLE;
+}
+
+void Frame::PaintEvent(Painter *painter)
+{
+	LOG << "frame paint" << ENDN;
+}
+
+MainWindow::MainWindow(HWND parent)
+	: Window(parent)
+{
+	Create(parent);
+}
+
+MainWindow::MainWindow(int x, int y, int w, int h, std::string title, HWND parent)
+	: Window(x, y, w, h, title, parent)
+{
+	Create(parent);
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::PreRegisterClass(WNDCLASS &wc)
+{
+
+}
+
+void MainWindow::PreCreateStruct(CREATESTRUCT &cs)
+{
+	cs.style = WS_POPUP;
+}
+
+
+
+void MainWindow::PaintEvent(Painter * painter)
+{
+	auto rect = GetRect();
+	static Brush b(150, 130, 110);
+	painter->FillRect(rect, b);
+	painter->SetTextColor(RGB(200, 200, 200));
+	painter->SetTextBgColor(b.GetColor());
+	painter->Text(10, 10, TEXT("Hellow"));
+}
+
+HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
+{
+	int border = 10;
+	Point pos;
+	GetCursorPos(&pos);
+	ScreenToClient(*this, &pos);
+
+	auto rect = GetRect();
+
+	bool hitLeft = pos.x >= rect.left && pos.x <= rect.left + border;
+	if (hitLeft) {
+
+		return HTLEFT;
+	}
+		
+
+	LOG << hitLeft << " "<< pos<< ENDN;
+
+	return E_NOTIMPL;
 }

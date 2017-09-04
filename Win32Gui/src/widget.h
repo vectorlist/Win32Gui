@@ -26,14 +26,20 @@ public:
 	void Update();
 	void CreateClass(HWND parent);
 	void CreateWidget(HWND parent);
-	/*void SetLayout(Layout* layout);*/
+	void SetBackgroundBrush();
+	void Show(int cmd = TRUE);
+
 	Layout* GetLayout() { return mLayout.get(); };
 protected:
 	static LRESULT CALLBACK GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
+	void PaintEvent();
 
 	std::unique_ptr<Layout>		mLayout;
 	const wchar_t*				mTitle;
 	int							mWidth;
 	int							mHeight;
+	bool						mIsSplitterMove;
+	HWND						mSplitterHandle;
+	bool						mOnHoover = false;
 };
 

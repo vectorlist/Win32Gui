@@ -11,6 +11,10 @@
 
 #define BRUSH_MAIN					Brush(40,40,40)
 #define BRUSH_TITLE					Brush(70,70,70)
+#define BRUSH_WIDGET				Brush(70,70,70)
+#define BRUSH_WINDOW				Brush(50,50,50)
+#define BRUSH_YELLOW				Brush(170,160,100)
+#define BRUSH_BLUE					Brush(50,80,150)
 
 struct Brush
 {
@@ -26,25 +30,23 @@ struct Brush
 	//assign conversation with HBRUSH
 	operator HBRUSH();
 
-	HBRUSH GetData()const;
+	COLORREF GetColor() const;
 
-	//static HBRUSH MainBrush;
-	//static HBRUSH TitleBrush;
 private:
+	COLORREF mColor;
 	HBRUSH mBrush;
 };
 
-//HBRUSH Brush::MainBrush		= Brush(50, 50, 50);
-//HBRUSH Brush::TitleBrush	= Brush(70, 70, 70);
-
 inline Brush::Brush(int32 r, int32 g, int32 b)
 {
-	mBrush = CreateSolidBrush(RGB(r, g, b));
+	mColor = RGB(r, g, b);
+	mBrush = CreateSolidBrush(mColor);
 }
 
 inline Brush::Brush(COLORREF color)
 {
-	mBrush = CreateSolidBrush(color);
+	mColor = color;
+	mBrush = CreateSolidBrush(mColor);
 }
 
 inline Brush::operator HBRUSH()
@@ -61,7 +63,7 @@ inline Brush::~Brush()
 	mBrush = NULL;
 }
 
-inline HBRUSH Brush::GetData() const
+inline COLORREF Brush::GetColor() const
 {
-	return mBrush;
+	return mColor;
 }

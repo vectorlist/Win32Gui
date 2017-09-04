@@ -65,6 +65,15 @@ namespace  win
 		rect.bottom = rect.top + fixedSize;
 		return rect;
 	}
+
+	inline bool IsPointOnRect(const POINT &point, const RECT &rect)
+	{
+		if (point.x > rect.left && point.x < rect.right &&
+			point.y > rect.top && point.y < rect.bottom) {
+			return true;
+		}
+		return false;
+	}
 }
 
 inline std::ostream& operator<<(std::ostream &os, const RECT &rc)

@@ -3,7 +3,7 @@
 struct Margin
 {
 	Margin(int spacing, int margin) : spacing(spacing), margin(margin) {}
-	Margin() : spacing(4), margin(4){}
+	Margin() : spacing(0), margin(0){}
 
 	int		GetSpacingMultiple() { return spacing * 2; };
 	int		GetSpacing() { return spacing; }
@@ -32,8 +32,12 @@ public:
 	
 	HWND GetHandle() { return mHandle; }
 protected:
-	virtual wchar_t*	GetLayoutClassName() const { return TEXT("Layout"); }
+	wchar_t*	GetLayoutClassName() const { return TEXT("Layout"); }
+	wchar_t*	GetSplitterClassName() const { return TEXT("Splitter"); }
 	virtual void		UpdateRect();
+	void				CreateSplitter();
+	virtual void		MoveSplitter(int x, int y);
+	void				ResetCursor();
 
 	static LRESULT WINAPI GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
 
@@ -41,6 +45,12 @@ protected:
 	HWND					mParent;
 	Margin					mMargin;
 	std::vector<HWND>		mChilds;
+	bool					mIsSplitterMove;
+	HWND					mSplitterHandle;
+	struct 
+	{
+		int size = 6;
+	}splitter;
 };
 
 class HLayout : public Layout

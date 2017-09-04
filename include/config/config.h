@@ -12,6 +12,8 @@
 //winapi
 #include <brush.h>
 #include <Point.h>
+#include <rect.h>
+#include <painter.h>
 #include <win32utils.h>
 
 #include <log.h>

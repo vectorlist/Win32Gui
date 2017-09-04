@@ -45,16 +45,7 @@
     <ClInclude Include="..\include\config\platformconfig.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="src\mainwindow.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\widget.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\window.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\winutils.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\application.h">
@@ -66,12 +57,21 @@
     <ClInclude Include="..\include\config\point.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\config\rect.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windowobject.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\painter.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\widget.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\window.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\application.cpp">
@@ -83,7 +83,10 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\mainwindow.cpp">
+    <ClCompile Include="src\window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windowobject.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
