@@ -42,14 +42,15 @@ void Application::SetWindowMap(HWND handle, Window *window)
 		LOG << "has already" << ENDN;
 	}
 	else {
-		LOG << "inssert window" << ENDN;
+		LOG << "inssert " << window->GetWindowName() << ENDN;
 		mWindowMap.insert(std::make_pair(handle, window));
 	}
 }
 
-Window* Application::GetWindowFromHandle(HWND handle)
+Window* Application::GetWindowFromMap(HWND handle)
 {
 	std::map<HWND, Window*, CompareWindow>::const_iterator it;
+
 	it = mWindowMap.find(handle);
 	if (it != mWindowMap.end()) {
 		return it->second;

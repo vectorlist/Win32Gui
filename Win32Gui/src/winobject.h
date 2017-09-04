@@ -11,6 +11,7 @@ public:
 	void			Hide();
 	void			SetWindowName(const std::string &name);
 	std::wstring	GetWideWindowName() const;
+	std::string     GetWindowName() const;
 	Rect			GetRect() const;
 	HWND			GetHandle() const;
 
@@ -28,6 +29,7 @@ protected:
 	virtual Rect	GetActiveRect();
 	HWND			mHandle;
 	HWND			mParent;
+	//Window*			
 
 	std::string		mWindowName;
 private:

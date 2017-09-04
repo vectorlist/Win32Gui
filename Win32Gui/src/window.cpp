@@ -2,23 +2,23 @@
 #include <application.h>
 
 Window::Window(HWND parent)
-	: WinObject(parent)
+	: WinObject(parent), mTitlebar(NULL), mResizer(NULL)
 {
 	SetWindowName("none");
-	//Create(parent);
 }
 
 Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
-	: WinObject(parent)
+	: WinObject(parent), mTitlebar(NULL), mResizer(NULL)
 {
 	SetWindowName(title);
 	SetX(x); SetY(y); SetWidth(w), SetHeight(h);
-	//Create(parent);
 }
 
 
 Window::~Window()
 {
+	SAFE_DELETE(mTitlebar);
+	SAFE_DELETE(mResizer);
 }
 
 void Window::Create(HWND parent)
@@ -58,10 +58,26 @@ void Window::Create(HWND parent)
 	cs.lpCreateParams = this;
 
 	cs.style &= ~WS_VISIBLE;
-	PreCreateStruct(cs);
+
+	PreCreate(cs);
+
 	mHandle = CreateWindowEx(NULL,
 		wc.lpszClassName, GetWideWindowName().c_str(), cs.style,
 		cs.x, cs.y, cs.cx, cs.cy, parent, NULL, App->GetInstance(), cs.lpCreateParams);
+}
+
+Window* Window::GetParentWindow()
+{
+	return App->GetWindowFromMap(mParent);
+}
+
+Rect Window::GetActiveRect() const
+{
+	Rect rect = GetRect();
+	if (mTitlebar) {
+		rect.top = rect.top + mTitlebar->GetSize();
+	}
+	return rect;
 }
 
 /*
@@ -76,12 +92,27 @@ void Window::PreRegisterClass(WNDCLASS &wc)
 * fixable create struct by derived class
 * cs.x....cs.cy, cs.style
 */
-void Window::PreCreateStruct(CREATESTRUCT &cs)
+void Window::PreCreate(CREATESTRUCT &cs)
 {
 	UNUSED(cs);
 }
 
-void Window::InitializeEvent(CREATESTRUCT &cs)
+/*
+* in order to paint background ..etc
+*/
+void Window::PrePaintEvent(Painter* painter)
+{
+	Rect rect = GetRect();
+	static Brush b(45, 45, 45);
+	painter->SetBrush(b);
+	painter->FillRect(rect);
+
+	if (mTitlebar) {
+		mTitlebar->Paint(painter);
+	}
+}
+
+void Window::OnCreateEvent(CREATESTRUCT &cs)
 {
 	UNUSED(cs);
 }
@@ -114,16 +145,23 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 	
 	switch (msg)
 	{
-	case WM_CREATE:		InitializeEvent(*(CREATESTRUCT*)lp); break;
+	case WM_CREATE:		OnCreateEvent(*(CREATESTRUCT*)lp); break;
 	case WM_SIZE:		ResizeEevnt(msg, wp, lp); break;
 	case WM_PAINT: 
 	{
 		painter.Begin(*this);
+		PrePaintEvent(&painter);
 		PaintEvent(&painter); 
 		painter.End(*this);
 		break;
 	}
 	//case WM_MOUSEMOVE:	return HitEvent(msg, wp, lp);
+	case WM_SETFOCUS:
+		LOG << "focus" << ENDN;
+		break;
+	case WM_ACTIVATE:
+		LOG << "h" << ENDN;
+		break;
 	case WM_NCHITTEST:	return HitEvent(msg, wp, lp);
 	case WM_KEYDOWN:	KeyPressEvent(wp); break;
 	}
@@ -139,6 +177,7 @@ LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 		window = (Window*)((CREATESTRUCT*)lp)->lpCreateParams;
 		window->mHandle = handle;
 		SetWindowLongPtr(handle, GWL_USERDATA, (LONG_PTR)window);
+		App->SetWindowMap(handle, window);
 	}
 	
 	if (window) {
@@ -170,37 +209,44 @@ void MainWindow::PreRegisterClass(WNDCLASS &wc)
 
 }
 
-void MainWindow::PreCreateStruct(CREATESTRUCT &cs)
+void MainWindow::PreCreate(CREATESTRUCT &cs)
 {
 	cs.style = WS_POPUP;
 }
 
-
-
-void MainWindow::PaintEvent(Painter * painter)
+void MainWindow::OnCreateEvent(CREATESTRUCT & cs)
 {
-	auto rect = GetRect();
-	static Brush b(45, 45, 45);
-	painter->SetBrush(b);
-	painter->FillRect(rect);
+	mResizer = new Resizer;
+	mTitlebar = new TitleBar(*this);
+}
 
-	if (mTitlebar.GetActive()) {
-		mTitlebar.PaintEvent(*this, painter);
-	}
-
+void MainWindow::PaintEvent(Painter *painter)
+{
 	painter->SetTextColor(RGB(200, 200, 200));
 	painter->SetTextBgColor(painter->brush->GetColor());
 	painter->Text(10, 10, TEXT("Hellow"));
+	LOG << "main window paint" << ENDN;
+}
+
+void MainWindow::KeyPressEvent(WPARAM wp)
+{
+	if (wp == 'A') {
+		LOG << "a " << GetWindowName() << ENDN;
+		Rect rect = GetRect();
+		//Rect rect(0, 0, 300, 300);
+		InvalidateRect(*this, &rect, FALSE);
+	}
+	Window::KeyPressEvent(wp);
 }
 
 HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 {
 	HRESULT result = LNULL;
-	if (mResizer.GetActive()) {
-		result = mResizer.HitEvent(this, lp);
+	if (mResizer) {
+		result = mResizer->HitEvent(this, lp);
 	}
-	if (mTitlebar.GetActive()) {
-		mTitlebar.HitEvent(this, lp);
+	if (mTitlebar) {
+		mTitlebar->HitEvent(lp);
 	}
 	return result;
 }

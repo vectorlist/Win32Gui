@@ -51,9 +51,6 @@
     <ClInclude Include="src\widget.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\application.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\layout.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -75,12 +72,12 @@
     <ClInclude Include="src\wincore.h">
       <Filter>src\win32</Filter>
     </ClInclude>
+    <ClInclude Include="src\application.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\widget.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\application.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\layout.cpp">
@@ -96,6 +93,9 @@
       <Filter>src\win32</Filter>
     </ClCompile>
     <ClCompile Include="src\wincore.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application.cpp">
       <Filter>src\win32</Filter>
     </ClCompile>
   </ItemGroup>

@@ -36,6 +36,11 @@ std::wstring WinObject::GetWideWindowName() const
 	return wide;
 }
 
+std::string WinObject::GetWindowName() const
+{
+	return mWindowName;
+}
+
 Rect WinObject::GetRect() const
 {
 	Rect rect;

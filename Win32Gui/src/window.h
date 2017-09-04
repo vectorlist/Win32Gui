@@ -11,7 +11,7 @@ struct WinEvent
 
 struct WinState
 {
-	bool isTopWindow;
+	bool isFloating;
 	bool resizeable;
 };
 
@@ -26,21 +26,28 @@ public:
 	virtual~Window();
 
 	virtual void Create(HWND parent);
+	Window*	GetParentWindow();
+	Rect	GetActiveRect() const;
 protected:
 	//PRE CREATE
-	virtual void PreRegisterClass(WNDCLASS &wc);
-	virtual void PreCreateStruct(CREATESTRUCT &cs);
+	virtual void	PreRegisterClass(WNDCLASS &wc);
+	virtual void	PreCreate(CREATESTRUCT &cs);
+	virtual void	PrePaintEvent(Painter* painter);
+	
+	virtual void	OnCreateEvent(CREATESTRUCT& cs);
+	virtual void	PaintEvent(Painter* painter);
+	virtual void	ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
+	virtual void	KeyPressEvent(WPARAM wp);
 
-	virtual void InitializeEvent(CREATESTRUCT& cs);
-	virtual void PaintEvent(Painter* painter);
-	virtual void ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
-	virtual void KeyPressEvent(WPARAM wp);
 	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
 	LRESULT CALLBACK		LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
 	static LRESULT CALLBACK	GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
 
 	WinState mState;
+
+	TitleBar*		mTitlebar;
+	Resizer*		mResizer;
 
 };
 
@@ -54,10 +61,11 @@ public:
 
 protected:
 	virtual void PreRegisterClass(WNDCLASS &wc);
-	virtual void PreCreateStruct(CREATESTRUCT &cs);
-	virtual void PaintEvent(Painter* painter) override;
+	virtual void PreCreate(CREATESTRUCT &cs);
+
+	virtual void OnCreateEvent(CREATESTRUCT &cs);
+	virtual void PaintEvent(Painter* painter) OVERRIDE;
+	virtual void KeyPressEvent(WPARAM wp);
 	virtual HRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
-	TitleBar	mTitlebar;
-	Resizer		mResizer;
 };

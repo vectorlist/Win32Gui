@@ -23,17 +23,18 @@ private:
 class TitleBar
 {
 public:
-	TitleBar(int fixedSize = 30);
+	TitleBar(HWND handle, int fixedSize = 30);
 
 	void	SetSize(int size);
 	int		GetSize() const;
 	void	SetActive(bool active);
 	bool	GetActive() const;
-	Rect	GetTitlebarRect(HWND handle);
+	Rect	GetTitlebarRect() const;
 
-	void	PaintEvent(HWND handle, Painter* painter);
-	LRESULT HitEvent(Window* window, LPARAM lp);
+	void	Paint(Painter* painter);
+	LRESULT HitEvent(LPARAM lp);
 private:
 	int		mFixedSize;
 	bool	mActive;
+	HWND	mHandle;
 };

@@ -24,15 +24,29 @@ void Widget::PreRegisterClass(WNDCLASS &wc)
 	wc.hbrBackground = b;
 }
 
-void Widget::PreCreateStruct(CREATESTRUCT &cs)
+void Widget::PreCreate(CREATESTRUCT &cs)
 {
 	if (mParent) {
 		cs.style = cs.style | WS_VISIBLE;
 	}
-	
+}
+
+void Widget::PrePaintEvent(Painter *painter)
+{
+	//UNUSED(painter);
+	Window::PrePaintEvent(painter);
+}
+
+void Widget::OnCreateEvent(CREATESTRUCT & cs)
+{
+	//mTitlebar = new TitleBar(*this, 16);
 }
 
 void Widget::PaintEvent(Painter *painter)
 {
 	LOG << "Widget Paint" << ENDN;
+	Rect rect = GetActiveRect();
+	static Brush brush(50, 80, 100);
+	painter->SetBrush(brush);
+	painter->FillRect(rect);
 }

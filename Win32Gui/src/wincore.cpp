@@ -24,6 +24,7 @@ bool Resizer::GetActive() const
 
 LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 {
+	if (!mActive) return LNULL;
 	Point pos(lp);
 	ScreenToClient(*window, &pos);
 
@@ -52,8 +53,8 @@ LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 
 /*--------------------- TitleBar -----------------------*/
 
-TitleBar::TitleBar(int fixedSize)
-	: mFixedSize(fixedSize), mActive(true)
+TitleBar::TitleBar(HWND handle, int fixedSize)
+	: mHandle(handle), mFixedSize(fixedSize), mActive(true)
 {
 }
 
@@ -77,25 +78,27 @@ bool TitleBar::GetActive() const
 	return mActive;
 }
 
-Rect TitleBar::GetTitlebarRect(HWND handle)
+Rect TitleBar::GetTitlebarRect() const
 {
 	Rect rect; 
-	GetClientRect(handle, &rect);
+	GetClientRect(mHandle, &rect);
 	rect.bottom = mFixedSize;
 	return rect;
 }
 
-void TitleBar::PaintEvent(HWND handle, Painter *painter)
+void TitleBar::Paint(Painter *painter)
 {
+	if (!mActive) return;
 	static Brush brush(80, 82, 85);
-	auto rect = GetTitlebarRect(handle);
+	auto rect = GetTitlebarRect();
 	painter->SetBrush(brush);
 	painter->FillRect(rect);
 }
 
-LRESULT TitleBar::HitEvent(Window *window, LPARAM lp)
+LRESULT TitleBar::HitEvent(LPARAM lp)
 {
-	Rect rect = GetTitlebarRect(*window);
-	LOG << rect << ENDN;
+	if (!mActive) return LNULL;
+	Rect rect = GetTitlebarRect();
+	//LOG << rect << ENDN;
 	return LNULL;
 }
