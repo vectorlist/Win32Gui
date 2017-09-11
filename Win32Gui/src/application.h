@@ -18,6 +18,7 @@ public:
 	int Run();
 //private:
 	static Application*			gApp;
+
 private:
 	int			SetMemoryInstance();
 

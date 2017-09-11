@@ -9,7 +9,7 @@ WinObject::WinObject(HWND parent)
 WinObject::~WinObject()
 {
 	if (mHandle) {
-		App->RemoveWindowFromMap(mHandle);
+		//App->RemoveWindowFromMap(mHandle);
 		DestroyWindow(mHandle);
 		mHandle = NULL;
 	}
@@ -71,10 +71,7 @@ void WinObject::SetFocus()
 
 void WinObject::SetGeometry(int x, int y, int w, int h)
 {
-	//mPos.x = x;
-	//mPos.y = y;
-	//mSize.cx = w;
-	//mSize.cy = h;
+	::MoveWindow(mHandle, x, y, w, h, true);
 	//TODO : relative position on runtime
 }
 
@@ -115,7 +112,7 @@ void WinObject::Move(const Point &pos, const Size &size, bool bRepaint)
 
 void WinObject::Move(const Rect &rect, bool bRepaint)
 {
-	::MoveWindow(mHandle, rect.left, rect.top, rect.GetHeight(), rect.GetHeight(), bRepaint);
+	::MoveWindow(mHandle, rect.left, rect.top, rect.GetWidth(), rect.GetHeight(), bRepaint);
 }
 
 /* set postion window on screen without change size*/
@@ -142,6 +139,16 @@ Size WinObject::GetSize() const
 {
 	Rect rect = GetRect();
 	return Size(rect.GetWidth(), rect.GetHeight());
+}
+
+Brush& WinObject::GetBrush()
+{
+	return mBrush;
+}
+
+void WinObject::SetBrush(const Brush &brush)
+{
+	mBrush = brush;
 }
 
 void WinObject::PostWndMessage(UINT msg, WPARAM wp, LPARAM lp) const
@@ -175,7 +182,24 @@ void WinObject::SetTrackMouseEnable(bool enable)
 	mEnableTrackMouse = enable;
 }
 
+void WinObject::SetParentWindow(HWND parent)
+{
+	::SetParent(*this, parent);
+	mParent = parent;
+}
+
+/*for the check splitter window*/
+
+
+bool WinObject::IsSplitter()
+{
+	return false;
+}
+
+/*it should be override by derived*/
 Rect WinObject::GetActiveRect()
 {
-	return Rect();
+	Rect rect;
+	::GetClientRect(*this, &rect);
+	return rect;
 }

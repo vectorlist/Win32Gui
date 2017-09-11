@@ -1,13 +1,27 @@
 #pragma once
 
 #include <Windows.h>
-
+#include <brush.h>
 /*------------------- custom window message ------------------------*/
 #define CWM_WINDOWCREATED		::RegisterWindowMessage(TEXT("CWM_WINDOWCREATED"))
 #define CWM_UPDATED				::RegisterWindowMessage(TEXT("CWM_UPDATED"))
 
 /*------------------- custom window notification -------------------*/
 #define CWN_BARMOVE				(WM_APP + 0x3F20)
+
+
+/*------------------- custom window class names  -------------------*/
+#define	CLASSNAME_MAINWINDOW	TEXT("MainWindowClass")
+
+//layout
+#define CLASSNAME_LAYOUT		TEXT("LayoutClass")		//we dont use this
+#define CLASSNAME_HLAYOUT		TEXT("HBoxLayoutClass")
+#define CLASSNAME_VLAYOUT		TEXT("VBoxLayoutClass")
+
+//splitter
+#define CLASSNAME_SPLITTER		TEXT("SplitterClass")
+
+
 
 struct CompareWindow
 {
@@ -29,11 +43,16 @@ namespace  win
 		return false;
 	}
 
-	//Window* GetwindowFromHandle(HWND handle)
-	//{
-	//	//TODO : register HWND window to custom allocate
-	//	return NULL;
-	//}
+	inline void ChangeWindowStyle(HWND handle, DWORD style)
+	{
+		SetWindowLong(handle, GWL_STYLE, style);
+	}
+
+	inline void SetParentAsWindowStyle(HWND src, HWND parent, DWORD srcStyle)
+	{
+		SetParent(src, parent);
+		SetWindowLong(src, GWL_STYLE, srcStyle);
+	}
 }
 
 inline std::ostream& operator<<(std::ostream &os, const RECT &rc)

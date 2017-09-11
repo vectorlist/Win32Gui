@@ -31,10 +31,6 @@ public:
 	int				GetY() const;
 	int				Width() const;
 	int				Height() const;
-	//void			SetX(int x)				{ mPos.x = x; }
-	//void			SetY(int y)				{ mPos.y = y; }
-	//void			SetWidth(int w)			{ mSize.cx = w; }
-	//void			SetHeight(int h)		{ mSize.cy = h; }
 
 	/*------------------- transform -------------------*/
 	void			Move(int x, int y, int w, int h, bool bRepaint = true);
@@ -46,6 +42,9 @@ public:
 	Point			GetPos() const;
 	Size			GetSize() const;
 
+	Brush&			GetBrush();
+	void			SetBrush(const Brush& brush);
+
 	void			PostWndMessage(UINT msg, WPARAM wp = NULL, LPARAM lp = NULL) const;
 	int				SendWndMessage(UINT msg, WPARAM wp = NULL, LPARAM lp = NULL) const;
 
@@ -54,8 +53,12 @@ public:
 
 	bool			GetTrackMouseEnable() const;
 	void			SetTrackMouseEnable(bool enable);
+
+	void			SetParentWindow(HWND parent);
 	
-	operator HWND()							{ return mHandle; }
+	operator HWND() { return mHandle; }
+
+	virtual bool	IsSplitter();
 protected:
 	virtual Rect	GetActiveRect();
 	HWND			mHandle;
@@ -66,6 +69,6 @@ private:
 	std::string		mWindowName;
 	/*Point			mPos;
 	Size			mSize;*/
-	
+	Brush			mBrush;
 	bool			mEnableTrackMouse;
 };

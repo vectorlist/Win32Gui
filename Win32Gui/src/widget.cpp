@@ -7,6 +7,12 @@ Widget::Widget(HWND parent)
 	Create(parent);
 }
 
+Widget::Widget(const std::string &title, HWND parent)
+	: Window(title, parent)
+{
+	Create(parent);
+}
+
 Widget::Widget(int x, int y, int w, int h, std::string title, HWND parent)
 	: Window(x, y, w, h, title, parent)
 {
@@ -35,29 +41,29 @@ void Widget::PreCreate(CREATESTRUCT &cs)
 void Widget::PrePaintEvent(Painter *painter)
 {
 	//UNUSED(painter);
-	Window::PrePaintEvent(painter);
+	//Window::PrePaintEvent(painter);
+	//LOG << "HBox layout paint" << ENDN;
 }
 
 void Widget::OnCreateEvent(CREATESTRUCT & cs)
 {
 	//mTitlebar = new TitleBar(*this);
 	//mTitlebar->SetActive(false);
-	mResizer = new Resizer();
+	//mResizer = new Resizer();
 
 }
 
 void Widget::PaintEvent(Painter *painter)
 {
-	LOG << "Widget Paint" << ENDN;
+	LOG << GetWindowName() << " paint" << ENDN;
 	Rect rect = GetActiveRect();
-	static Brush brush(50, 80, 100);
-	painter->SetBrush(brush);
+	painter->SetBrush(GetBrush());
 	painter->FillRect(rect);
 }
 
 void Widget::MouseMoveEvent(MouseEvent &event)
 {
-	//LOG << pos << ENDN;
+	LOG << event.GetPos() << " " << GetWindowName() << ENDN;
 }
 
 void Widget::MousePressEvent(MouseEvent &event)

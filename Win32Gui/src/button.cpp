@@ -71,11 +71,23 @@ void Button::PaintEvent(Painter *painter)
 
 void Button::MousePressEvent(MouseEvent &event)
 {
-	LOG << "working" << ENDN;
-	if (mType == ButtonType::Close) {
-		Window* Main = App->GetWindowFromMap(mParent);
-		//send message to Window Local proc
-		SendMessage(*Main, WM_USER_PREPAREDESTROY, NULL, NULL);
+	//send message by type
+	switch (mType)
+	{
+	case ButtonType::Min:
+		break;
+	case ButtonType::Max:
+		break;
+	case ButtonType::Close:
+	{
+		//not safe if it is not main
+		//'Window* mainWindow = App->GetWindowFromMap(mParent);
+
+		SendMessage(*this, WM_CLOSE, NULL, NULL);
+		break;
+	}
+	case ButtonType::User:
+		break;
 	}
 }
 
@@ -150,9 +162,7 @@ HRESULT CALLBACK Button::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		this->MouseMoveEvent(me);
 		break;
 	case WM_DESTROY:
-		LOG << "quit" << ENDN;
-		//we must send message to main window to quit msg
-		PostQuitMessage(0);
+		//DestroyEvent(Coustom Event)
 		break;
 	}
 	//replace to static wndproc

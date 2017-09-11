@@ -2,6 +2,12 @@
 
 #include <windows.h>
 
+struct Margin
+{
+	int spacing;
+	Margin() : spacing(10) {}
+};
+
 class Rect : public RECT
 {
 public:
@@ -12,8 +18,19 @@ public:
 	int GetWidth() const { return right - left; }
 	int GetHeight() const { return bottom - top; }
 
+	//operator
+
 	operator RECT() { return *this; }
 	operator LPRECT() { return this; }
+
+	Rect& operator-(const Margin& m)
+	{
+		left += m.spacing;
+		right -= m.spacing;
+		top += m.spacing;
+		bottom -= m.spacing;
+		return *this;
+	}
 
 };
 

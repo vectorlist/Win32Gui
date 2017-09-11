@@ -6,6 +6,7 @@ class Widget : public Window
 {
 public:
 	Widget(HWND parent = NULL);
+	Widget(const std::string &title, HWND parent = NULL);
 	Widget(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
 	virtual~Widget();
 
@@ -19,4 +20,5 @@ protected:
 	virtual void MouseMoveEvent(MouseEvent &event);
 	virtual void MousePressEvent(MouseEvent &event);
 };
+
 

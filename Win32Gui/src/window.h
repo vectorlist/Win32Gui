@@ -35,6 +35,12 @@ protected:
 	virtual void	MouseEnterEvent(MouseEvent &event);
 	virtual void	MouseLeaveEvent(MouseEvent &event);
 
+
+	//Update
+	virtual void	Update();
+
+
+
 	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
 	virtual LRESULT CALLBACK LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);

@@ -90,6 +90,9 @@
     <ClInclude Include="src\custombutton.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\splitter.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\widget.cpp">
@@ -120,6 +123,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\button.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\splitter.cpp">
       <Filter>src\win32</Filter>
     </ClCompile>
   </ItemGroup>

@@ -69,8 +69,9 @@ void Application::RemoveWindowFromMap(HWND handle)
 			break;
 		}
 	}
-	
 }
+
+
 
 int Application::Run()
 {

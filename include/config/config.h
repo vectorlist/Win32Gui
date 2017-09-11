@@ -20,16 +20,6 @@
 #include <event.h>
 #include <polygon.h>
 
-
-//#ifndef ULONG_PTR    
-//#define ULONG_PTR unsigned long *    
-//#endif
-//
-//#include <Ole2.h>
-//#include <GdiPlus.h>
-//using namespace Gdiplus;
-//#pragma comment(lib, "gdiplus.lib")
-
 #define OVERRIDE		override
 
 #define SCREEN_X		GetSystemMetrics(SM_CXSCREEN)

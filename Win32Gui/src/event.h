@@ -4,6 +4,12 @@
 #include <brush.h>
 #include <point.h>
 
+//Global window event
+struct Event
+{
+	void* ptr;
+};
+
 struct MouseEvent
 {
 	//MouseEvent(UINT msg, WPARAM wp, LPARAM lp)

@@ -35,6 +35,7 @@
     <ClInclude Include="src\event.h" />
     <ClInclude Include="src\mainwindow.h" />
     <ClInclude Include="src\polygon.h" />
+    <ClInclude Include="src\splitter.h" />
     <ClInclude Include="src\wincore.h" />
     <ClInclude Include="src\layout.h" />
     <ClInclude Include="src\painter.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mainwindow.cpp" />
     <ClCompile Include="src\painter.cpp" />
+    <ClCompile Include="src\splitter.cpp" />
     <ClCompile Include="src\widget.cpp" />
     <ClCompile Include="src\wincore.cpp" />
     <ClCompile Include="src\window.cpp" />

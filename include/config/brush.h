@@ -8,6 +8,7 @@
 #define BRUSH_COLOR_TITLE_BG		RGB(70,70,70)
 #define BRUSH_COLOR_TEXT			RGB(190,190,190)
 #define BRUSH_COLOR_TITLE_TEXT		RGB(190,190,190)
+#define COLOR_BLACK					RGB(0,0,0)
 
 #define BRUSH_MAIN					Brush(40,40,40)
 #define BRUSH_TITLE					Brush(70,70,70)
@@ -16,6 +17,7 @@
 #define BRUSH_YELLOW				Brush(170,160,100)
 #define BRUSH_BLUE					Brush(50,80,150)
 #define BRUSH_ERROR					Brush(255, 0, 0)
+#define BRUSH_NULL					Brush(0,0,0)
 
 #include <memory>
 //template <typename T>

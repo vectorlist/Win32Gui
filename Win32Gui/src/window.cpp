@@ -41,6 +41,7 @@ void Window::Create(HWND parent)
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpszMenuName = NULL;
 
+	//changeable by derived class
 	PreRegisterClass(wc);
 
 	if (!GetClassInfo(App->GetInstance(), wc.lpszClassName, &wc))
@@ -63,12 +64,17 @@ void Window::Create(HWND parent)
 
 	cs.style &= ~WS_VISIBLE;
 	cs.hMenu = NULL;
+	
 
+	//changeable by derived class
 	PreCreate(cs);
 
 	mHandle = CreateWindowEx(NULL,
 		wc.lpszClassName, GetWideWindowName().c_str(), cs.style,
-		cs.x, cs.y, cs.cx, cs.cy, parent, NULL, App->GetInstance(), cs.lpCreateParams);
+		cs.x, cs.y, cs.cx, cs.cy, parent, cs.hMenu, App->GetInstance(), cs.lpCreateParams);
+	if (!mHandle) {
+		LOG_FATAL("failed to create window");
+	}
 }
 
 Window* Window::GetParentWindow()
@@ -136,9 +142,7 @@ void Window::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
 
 void Window::KeyPressedEvent(WPARAM wp)
 {
-	if (wp == VK_ESCAPE) {
-		PostQuitMessage(0);
-	}
+	UNUSED(wp);
 }
 
 void Window::MouseMoveEvent(MouseEvent &event)
@@ -161,6 +165,12 @@ void Window::MouseLeaveEvent(MouseEvent &event)
 	UNUSED(event);
 }
 
+/*specific update window (for reclac child rect ..etc)*/
+void Window::Update()
+{
+}
+
+
 LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 {
 	return HTCLIENT;
@@ -175,7 +185,10 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 	switch (msg)
 	{
 	case WM_CREATE:		OnCreateEvent(*(CREATESTRUCT*)lp); break;
-	case WM_SIZE:		ResizeEevnt(msg, wp, lp); break;
+	case WM_SIZE:
+		ResizeEevnt(msg, wp, lp);
+		//Update();
+		break;
 	case WM_PAINT: 
 	{
 		painter.Begin(*this);
