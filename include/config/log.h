@@ -4,6 +4,7 @@
 #include <macroconfig.h>
 #include <iostream>
 #include <Windows.h>
+#include <assert.h>
 
 #define LOG_ERROR(x)			Log::LogError(x)
 #define LOG_FORMAT(x, ...)		Log::LogFormat(x, ##__VA_ARGS__)

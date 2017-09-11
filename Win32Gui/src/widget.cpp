@@ -26,9 +26,10 @@ void Widget::PreRegisterClass(WNDCLASS &wc)
 
 void Widget::PreCreate(CREATESTRUCT &cs)
 {
-	if (mParent) {
+	if (mParent)
 		cs.style = cs.style | WS_VISIBLE;
-	}
+	else
+		cs.style = WS_POPUP;
 }
 
 void Widget::PrePaintEvent(Painter *painter)
@@ -39,7 +40,10 @@ void Widget::PrePaintEvent(Painter *painter)
 
 void Widget::OnCreateEvent(CREATESTRUCT & cs)
 {
-	//mTitlebar = new TitleBar(*this, 16);
+	//mTitlebar = new TitleBar(*this);
+	//mTitlebar->SetActive(false);
+	mResizer = new Resizer();
+
 }
 
 void Widget::PaintEvent(Painter *painter)
@@ -50,3 +54,14 @@ void Widget::PaintEvent(Painter *painter)
 	painter->SetBrush(brush);
 	painter->FillRect(rect);
 }
+
+void Widget::MouseMoveEvent(MouseEvent &event)
+{
+	//LOG << pos << ENDN;
+}
+
+void Widget::MousePressEvent(MouseEvent &event)
+{
+	//LOG << pos << ENDN;
+}
+

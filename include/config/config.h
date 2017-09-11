@@ -7,18 +7,28 @@
 #include <stdconfig.h>
 #include <typeconfig.h>
 #include <macroconfig.h>
-
+#include <log.h>
 
 //winapi
+#include <CommCtrl.h>
 #include <brush.h>
 #include <Point.h>
 #include <rect.h>
 #include <painter.h>
 #include <wincore.h>
 #include <win32utils.h>
+#include <event.h>
+#include <polygon.h>
 
-#include <log.h>
 
+//#ifndef ULONG_PTR    
+//#define ULONG_PTR unsigned long *    
+//#endif
+//
+//#include <Ole2.h>
+//#include <GdiPlus.h>
+//using namespace Gdiplus;
+//#pragma comment(lib, "gdiplus.lib")
 
 #define OVERRIDE		override
 

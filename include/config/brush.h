@@ -15,62 +15,165 @@
 #define BRUSH_WINDOW				Brush(50,50,50)
 #define BRUSH_YELLOW				Brush(170,160,100)
 #define BRUSH_BLUE					Brush(50,80,150)
+#define BRUSH_ERROR					Brush(255, 0, 0)
 
-struct Brush
+#include <memory>
+//template <typename T>
+//struct deref_ptr;
+//template <typename T>
+//struct deref_ptr<T*> { typedef T type; };
+//
+//typedef std::shared_ptr<deref_ptr<HBRUSH>::type> brush_ptr;
+//
+//inline brush_ptr create_brush(COLORREF color) {
+//	return brush_ptr(CreateSolidBrush(color), DeleteObject);
+//}
+//typedef std::shared_ptr<defref>
+#include <log.h>
+
+//conversasion Color to COLORREF
+class Color
 {
-	Brush() = delete;
-	Brush(int32 r, int32 g, int32 b);
-	Brush(COLORREF color);
-	~Brush();
+public:
+	Color()
+	{
+		mColor = BYTE(0) | (BYTE(0) << 8) | (BYTE(0) << 16);
+	}
+	Color(int r, int g, int b)
+	{
+		mColor = BYTE(r) | (BYTE(g) << 8) | (BYTE(b) << 16);
+	}
 
-	//delete copy and asign
-	Brush(const Brush&) = delete;
-	Brush& operator=(const Brush&) = delete;
-
-	//assign conversation with HBRUSH
-	operator HBRUSH();
-	operator HBRUSH() const;
-
-	COLORREF GetColor() const;
-
+	operator COLORREF()
+	{
+		return mColor;
+	}
 private:
 	COLORREF mColor;
-	HBRUSH mBrush;
 };
 
-inline Brush::Brush(int32 r, int32 g, int32 b)
+//replace to template all gdi object
+
+class Brush_T
 {
-	mColor = RGB(r, g, b);
-	mBrush = CreateSolidBrush(mColor);
-}
-
-inline Brush::Brush(COLORREF color)
-{
-	mColor = color;
-	mBrush = CreateSolidBrush(mColor);
-}
-
-inline Brush::operator HBRUSH()
-{
-	return mBrush;
-}
-
-inline Brush::operator HBRUSH() const
-{
-	return mBrush;
-}
-
-
-inline Brush::~Brush()
-{
-
-	if (mBrush) {
-		DeleteObject(mBrush);
+public:
+	Brush_T()
+	{
+		mColor = RGB(0, 0, 0);
+		mHandle = CreateSolidBrush(mColor);
 	}
-	mBrush = NULL;
-}
+	Brush_T(int r, int g, int b)
+	{
+		mColor = RGB(r, g, b);
+		mHandle = CreateSolidBrush(mColor);
+	}
+	~Brush_T()
+	{
+		Release();
+	}
 
-inline COLORREF Brush::GetColor() const
+	void Release()
+	{
+		if (mHandle) {
+			DeleteObject(mHandle);
+			mHandle = NULL;
+		}
+	}
+
+	HBRUSH mHandle;
+	COLORREF mColor;
+};
+
+class Brush
 {
-	return mColor;
+public:
+	Brush()
+	{
+		mBrush = std::make_shared<Brush_T>();
+	}
+	Brush(int r, int g, int b)
+	{
+		mBrush = std::make_shared<Brush_T>(r,g,b);
+	}
+
+	operator std::shared_ptr<Brush_T>&()
+	{
+		return mBrush;
+	}
+
+	operator HBRUSH() const
+	{
+		return mBrush->mHandle;
+	}
+	COLORREF GetColor() const
+	{
+		return mBrush->mColor;
+	}
+private:
+	std::shared_ptr<Brush_T> mBrush;
+};
+
+
+class Pen_T
+{
+public:
+	Pen_T(int style, int width, Color color)
+	{
+		mColor = color;
+		mHandle = ::CreatePen(style, width, mColor);
+	}
+	
+	~Pen_T()
+	{
+		Release();
+	}
+
+	void Release()
+	{
+		if (mHandle) {
+			DeleteObject(mHandle);
+			mHandle = NULL;
+		}
+	}
+
+	HPEN mHandle;
+	COLORREF mColor;
+};
+
+class Pen
+{
+public:
+	Pen()
+	{
+		mPen = std::make_shared<Pen_T>(PS_SOLID, 1, Color());
+	}
+	Pen(int style, int width, Color color = Color())
+	{
+		mPen = std::make_shared<Pen_T>(style, width, color);
+	}
+
+
+	//counting refference 
+	operator std::shared_ptr<Pen_T>&()
+	{
+		return mPen;
+	}
+
+	operator HPEN()
+	{
+		return mPen->mHandle;
+	}
+
+private:
+	std::shared_ptr<Pen_T> mPen;
+};
+
+
+inline std::ostream& operator<<(std::ostream &os,  Color& color) 
+{
+	//LOBYTE
+	os  << "Color(" << (int)(color & 0xff) 
+		<< ", " << (int)(color >> 8)
+		<< ", " << (int)(color >> 16) << ")";
+	return os;
 }

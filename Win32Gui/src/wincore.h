@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <rect.h>
+#include <brush.h>
 
 class Window;
 class Painter;
@@ -12,11 +13,11 @@ public:
 
 	int		GetBorderSize() const;
 	void	SetActive(bool active);
-	bool	GetActive() const;
+	bool	IsActive() const;
 	LRESULT HitEvent(Window* window, LPARAM lp);
 private:
-	bool			mActive;
-	int				mBorderSize;
+	bool	mActive;
+	int		mBorderSize;
 
 };
 
@@ -28,8 +29,11 @@ public:
 	void	SetSize(int size);
 	int		GetSize() const;
 	void	SetActive(bool active);
-	bool	GetActive() const;
+	bool	IsActive() const;
 	Rect	GetTitlebarRect() const;
+
+	void	SetBrush(Brush &brush);
+	Brush&  GetBrush();
 
 	void	Paint(Painter* painter);
 	LRESULT HitEvent(LPARAM lp);
@@ -37,4 +41,5 @@ private:
 	int		mFixedSize;
 	bool	mActive;
 	HWND	mHandle;
+	Brush   mBrush;
 };

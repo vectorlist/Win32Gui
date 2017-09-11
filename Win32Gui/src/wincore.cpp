@@ -1,6 +1,7 @@
 #include "wincore.h"
 #include <window.h>
 #include <log.h>
+#include <application.h>
 
 Resizer::Resizer(int borderSize)
 	: mBorderSize(borderSize), mActive(true)
@@ -17,14 +18,14 @@ void Resizer::SetActive(bool active)
 	mActive = active;
 }
 
-bool Resizer::GetActive() const
+bool Resizer::IsActive() const
 {
 	return mActive;
 }
 
 LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 {
-	if (!mActive) return LNULL;
+	if (!mActive) return HTCLIENT;
 	Point pos(lp);
 	ScreenToClient(*window, &pos);
 
@@ -48,7 +49,7 @@ LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 	if (hitTop) return HTTOP;
 	if (hitBottom) return HTBOTTOM;
 
-	return LNULL;
+	return HTCLIENT;
 }
 
 /*--------------------- TitleBar -----------------------*/
@@ -56,6 +57,7 @@ LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 TitleBar::TitleBar(HWND handle, int fixedSize)
 	: mHandle(handle), mFixedSize(fixedSize), mActive(true)
 {
+	SetBrush(Brush(160, 60, 60));
 }
 
 void TitleBar::SetSize(int size)
@@ -73,7 +75,7 @@ void TitleBar::SetActive(bool active)
 	mActive = active;
 }
 
-bool TitleBar::GetActive() const
+bool TitleBar::IsActive() const
 {
 	return mActive;
 }
@@ -86,12 +88,24 @@ Rect TitleBar::GetTitlebarRect() const
 	return rect;
 }
 
+void TitleBar::SetBrush(Brush &brush)
+{
+	mBrush = brush;
+}
+
+Brush& TitleBar::GetBrush()
+{
+	return mBrush;
+}
+
 void TitleBar::Paint(Painter *painter)
 {
 	if (!mActive) return;
-	static Brush brush(80, 82, 85);
+	
+	Window* window = App->GetWindowFromMap(mHandle);
+	
 	auto rect = GetTitlebarRect();
-	painter->SetBrush(brush);
+	painter->SetBrush(GetBrush());
 	painter->FillRect(rect);
 }
 

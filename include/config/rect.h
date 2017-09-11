@@ -12,5 +12,8 @@ public:
 	int GetWidth() const { return right - left; }
 	int GetHeight() const { return bottom - top; }
 
+	operator RECT() { return *this; }
+	operator LPRECT() { return this; }
+
 };
 

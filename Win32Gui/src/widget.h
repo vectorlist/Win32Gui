@@ -16,5 +16,7 @@ protected:
 
 	virtual void OnCreateEvent(CREATESTRUCT &cs);
 	virtual void PaintEvent(Painter* painter) override;
+	virtual void MouseMoveEvent(MouseEvent &event);
+	virtual void MousePressEvent(MouseEvent &event);
 };
 

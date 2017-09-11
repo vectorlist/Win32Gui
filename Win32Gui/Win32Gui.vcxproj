@@ -30,6 +30,11 @@
     <ClInclude Include="..\include\config\typeconfig.h" />
     <ClInclude Include="..\include\config\win32utils.h" />
     <ClInclude Include="src\application.h" />
+    <ClInclude Include="src\button.h" />
+    <ClInclude Include="src\custombutton.h" />
+    <ClInclude Include="src\event.h" />
+    <ClInclude Include="src\mainwindow.h" />
+    <ClInclude Include="src\polygon.h" />
     <ClInclude Include="src\wincore.h" />
     <ClInclude Include="src\layout.h" />
     <ClInclude Include="src\painter.h" />
@@ -39,8 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
+    <ClCompile Include="src\button.cpp" />
     <ClCompile Include="src\layout.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mainwindow.cpp" />
+    <ClCompile Include="src\painter.cpp" />
     <ClCompile Include="src\widget.cpp" />
     <ClCompile Include="src\wincore.cpp" />
     <ClCompile Include="src\window.cpp" />
@@ -102,7 +110,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)include\config;$(SolutionDir)include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

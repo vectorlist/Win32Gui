@@ -2,32 +2,22 @@
 
 #include <winobject.h>
 
-struct WinEvent
-{
-	UINT msg;
-	WPARAM wp;
-	LPARAM lp;
-};
+#define WM_USER_PREPAREDESTROY     (WM_USER + 0)
 
-struct WinState
-{
-	bool isFloating;
-	bool resizeable;
-};
-
-#define WMU_WINDOWCREATED		::RegisterWindowMessage(TEXT("WMU_WINDOWCREATED"))
-#define WMU_UPDATED				::RegisterWindowMessage(TEXT("WMU_UPDATED"))
+#define POINT_IN_RECT(x,xx)		::PtInRect(x,x)
 
 class Window : public WinObject
 {
 public:
 	Window(HWND parent = NULL);
+	Window(const std::string &title, HWND parnet = NULL);
 	Window(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
 	virtual~Window();
 
-	virtual void Create(HWND parent);
-	Window*	GetParentWindow();
-	Rect	GetActiveRect() const;
+	virtual void	Create(HWND parent);
+	Window*			GetParentWindow();
+	Rect			GetActiveRect() const;
+	TitleBar*		GetTitleBar() { return mTitlebar; };
 protected:
 	//PRE CREATE
 	virtual void	PreRegisterClass(WNDCLASS &wc);
@@ -37,35 +27,21 @@ protected:
 	virtual void	OnCreateEvent(CREATESTRUCT& cs);
 	virtual void	PaintEvent(Painter* painter);
 	virtual void	ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
-	virtual void	KeyPressEvent(WPARAM wp);
+	virtual void	KeyPressedEvent(WPARAM wp);
+
+	//Mouse
+	virtual void	MouseMoveEvent(MouseEvent &event);
+	virtual void	MousePressEvent(MouseEvent &event);
+	virtual void	MouseEnterEvent(MouseEvent &event);
+	virtual void	MouseLeaveEvent(MouseEvent &event);
 
 	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
-	LRESULT CALLBACK		LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
-	static LRESULT CALLBACK	GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
-
-	WinState mState;
+	virtual LRESULT CALLBACK LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
+	static LRESULT CALLBACK	 GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
 
 	TitleBar*		mTitlebar;
 	Resizer*		mResizer;
 
 };
 
-
-class MainWindow : public Window
-{
-public:
-	MainWindow(HWND parent = NULL);
-	MainWindow(int x, int y, int w, int h, std::string title = "none", HWND parent = NULL);
-	virtual~MainWindow();
-
-protected:
-	virtual void PreRegisterClass(WNDCLASS &wc);
-	virtual void PreCreate(CREATESTRUCT &cs);
-
-	virtual void OnCreateEvent(CREATESTRUCT &cs);
-	virtual void PaintEvent(Painter* painter) OVERRIDE;
-	virtual void KeyPressEvent(WPARAM wp);
-	virtual HRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
-
-};

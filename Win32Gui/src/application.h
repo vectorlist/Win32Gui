@@ -13,6 +13,7 @@ public:
 	HINSTANCE	GetInstance() { return mInstance; };
 	void		SetWindowMap(HWND handle, Window* window);
 	Window*		GetWindowFromMap(HWND handle);
+	void		RemoveWindowFromMap(HWND handle);
 
 	int Run();
 //private:

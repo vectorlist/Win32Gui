@@ -75,6 +75,21 @@
     <ClInclude Include="src\application.h">
       <Filter>src\win32</Filter>
     </ClInclude>
+    <ClInclude Include="src\mainwindow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\button.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\polygon.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\custombutton.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\widget.cpp">
@@ -96,6 +111,15 @@
       <Filter>src\win32</Filter>
     </ClCompile>
     <ClCompile Include="src\application.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\painter.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mainwindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\button.cpp">
       <Filter>src\win32</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,11 +7,17 @@ Window::Window(HWND parent)
 	SetWindowName("none");
 }
 
+Window::Window(const std::string &title, HWND parent)
+	: WinObject(parent), mTitlebar(NULL), mResizer(NULL)
+{
+	SetWindowName(title);
+}
+
 Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
 	: WinObject(parent), mTitlebar(NULL), mResizer(NULL)
 {
 	SetWindowName(title);
-	SetX(x); SetY(y); SetWidth(w), SetHeight(h);
+	mSizeInfo = CreateSizeInfo(x,y,w,h);
 }
 
 
@@ -37,10 +43,8 @@ void Window::Create(HWND parent)
 
 	PreRegisterClass(wc);
 
-	if (GetClassInfo(App->GetInstance(), wc.lpszClassName, &wc)) {
-		LOG << "has already" << ENDN;
-	}
-	else {
+	if (!GetClassInfo(App->GetInstance(), wc.lpszClassName, &wc))
+	{
 		if (!RegisterClass(&wc))
 			LOG_FATAL("failed to register window class");
 	}
@@ -50,14 +54,15 @@ void Window::Create(HWND parent)
 	DWORD childStyle = WS_CHILD | WS_VISIBLE;
 	cs.style = parent ? childStyle : singleStyle;
 
-	cs.x = GetX();
-	cs.y = GetY();
-	cs.cx = GetWidth();
-	cs.cy = GetHeight();
+	cs.x = mSizeInfo.x;
+	cs.y = mSizeInfo.y;
+	cs.cx = mSizeInfo.w;
+	cs.cy = mSizeInfo.h;
 
 	cs.lpCreateParams = this;
 
 	cs.style &= ~WS_VISIBLE;
+	cs.hMenu = NULL;
 
 	PreCreate(cs);
 
@@ -74,7 +79,7 @@ Window* Window::GetParentWindow()
 Rect Window::GetActiveRect() const
 {
 	Rect rect = GetRect();
-	if (mTitlebar) {
+	if (mTitlebar && mTitlebar->IsActive()) {
 		rect.top = rect.top + mTitlebar->GetSize();
 	}
 	return rect;
@@ -102,8 +107,10 @@ void Window::PreCreate(CREATESTRUCT &cs)
 */
 void Window::PrePaintEvent(Painter* painter)
 {
+	//Built in Pre Paint
 	Rect rect = GetRect();
-	static Brush b(45, 45, 45);
+	Brush b(45, 45, 45);
+
 	painter->SetBrush(b);
 	painter->FillRect(rect);
 
@@ -124,25 +131,47 @@ void Window::PaintEvent(Painter* painter)
 
 void Window::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
 {
-	LOG << "resize" << ENDN;
+	//LOG << "resize" << ENDN;
 }
 
-void Window::KeyPressEvent(WPARAM wp)
+void Window::KeyPressedEvent(WPARAM wp)
 {
 	if (wp == VK_ESCAPE) {
 		PostQuitMessage(0);
 	}
 }
 
+void Window::MouseMoveEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
+void Window::MousePressEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
+void Window::MouseEnterEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
+void Window::MouseLeaveEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
 LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 {
-	return LNULL;
+	return HTCLIENT;
 }
 
 LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 {
+	//local event
 	Painter painter;
-	
+	MouseEvent me{msg, wp, lp};
+
 	switch (msg)
 	{
 	case WM_CREATE:		OnCreateEvent(*(CREATESTRUCT*)lp); break;
@@ -157,19 +186,41 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 	}
 	//case WM_MOUSEMOVE:	return HitEvent(msg, wp, lp);
 	case WM_SETFOCUS:
-		LOG << "focus" << ENDN;
+		LOG << "focus on  : " << GetWindowName() << ENDN;
+		break;
+	case WM_KILLFOCUS:
+		LOG << "focus off : " << GetWindowName()<< ENDN;
 		break;
 	case WM_ACTIVATE:
-		LOG << "h" << ENDN;
+		LOG << "active    : " << GetWindowName() << ENDN;
+		break;
+	case WM_MOUSEMOVE:
+	{
+		MouseMoveEvent(me);
+		break;
+	}
+	case WM_LBUTTONDOWN:
+	{
+		MousePressEvent(me);
+		break;
+	}
+	case WM_NCCALCSIZE:
+		//LOG << "cal " << GetWindowName() <<ENDN;
 		break;
 	case WM_NCHITTEST:	return HitEvent(msg, wp, lp);
-	case WM_KEYDOWN:	KeyPressEvent(wp); break;
+
+	case WM_KEYDOWN:	KeyPressedEvent(wp); break;
+	case WM_USER_PREPAREDESTROY:
+		LOG << "working user message" << ENDN;
+		break;
 	}
+
 	return DefWindowProc(*this, msg, wp, lp);
 }
 
 LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 {
+	//all created HWND will map to Application
 	Window* window = (Window*)GetWindowLongPtr(handle, GWL_USERDATA);
 	
 	if (WM_NCCREATE == msg)
@@ -177,6 +228,7 @@ LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 		window = (Window*)((CREATESTRUCT*)lp)->lpCreateParams;
 		window->mHandle = handle;
 		SetWindowLongPtr(handle, GWL_USERDATA, (LONG_PTR)window);
+		//insert HWND and Window to map
 		App->SetWindowMap(handle, window);
 	}
 	
@@ -184,71 +236,6 @@ LRESULT Window::GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp)
 		return window->LocalWndProc(msg, wp, lp);
 	}
 	return DefWindowProc(handle, msg, wp, lp);
-}
-
-
-
-MainWindow::MainWindow(HWND parent)
-	: Window(parent)
-{
-	Create(parent);
-}
-
-MainWindow::MainWindow(int x, int y, int w, int h, std::string title, HWND parent)
-	: Window(x, y, w, h, title, parent)
-{
-	Create(parent);
-}
-
-MainWindow::~MainWindow()
-{
-}
-
-void MainWindow::PreRegisterClass(WNDCLASS &wc)
-{
-
-}
-
-void MainWindow::PreCreate(CREATESTRUCT &cs)
-{
-	cs.style = WS_POPUP;
-}
-
-void MainWindow::OnCreateEvent(CREATESTRUCT & cs)
-{
-	mResizer = new Resizer;
-	mTitlebar = new TitleBar(*this);
-}
-
-void MainWindow::PaintEvent(Painter *painter)
-{
-	painter->SetTextColor(RGB(200, 200, 200));
-	painter->SetTextBgColor(painter->brush->GetColor());
-	painter->Text(10, 10, TEXT("Hellow"));
-	LOG << "main window paint" << ENDN;
-}
-
-void MainWindow::KeyPressEvent(WPARAM wp)
-{
-	if (wp == 'A') {
-		LOG << "a " << GetWindowName() << ENDN;
-		Rect rect = GetRect();
-		//Rect rect(0, 0, 300, 300);
-		InvalidateRect(*this, &rect, FALSE);
-	}
-	Window::KeyPressEvent(wp);
-}
-
-HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
-{
-	HRESULT result = LNULL;
-	if (mResizer) {
-		result = mResizer->HitEvent(this, lp);
-	}
-	if (mTitlebar) {
-		mTitlebar->HitEvent(lp);
-	}
-	return result;
 }
 
 

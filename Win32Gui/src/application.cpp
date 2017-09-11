@@ -58,6 +58,20 @@ Window* Application::GetWindowFromMap(HWND handle)
 	return NULL;
 }
 
+void Application::RemoveWindowFromMap(HWND handle)
+{
+	std::map<HWND, Window*, CompareWindow>::iterator it;
+
+	for (it = mWindowMap.begin(); it != mWindowMap.end(); ++it)
+	{
+		if (handle == it->first) {
+			mWindowMap.erase(it);
+			break;
+		}
+	}
+	
+}
+
 int Application::Run()
 {
 	MSG msg{};
