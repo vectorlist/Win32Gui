@@ -5,7 +5,7 @@
 class Splitter : public Window
 {
 public:
-	Splitter(int fixedSize = 30);
+	Splitter(int fixedSize = 10);
 	~Splitter();
 
 	void Attach(Window* parent, Window* left, Window* right);
@@ -21,7 +21,14 @@ protected:
 	virtual void PreRegisterClass(WNDCLASS &wc);
 	virtual void PreCreate(CREATESTRUCT &cs);
 
-	virtual void PaintEvent(Painter* painter);	
+	virtual void PaintEvent(Painter* painter);
+	virtual void MouseMoveEvent(MouseEvent &event);
+	virtual void MouseEnterEvent(MouseEvent &event);
 
+	virtual void MouseReleaseEvent(MouseEvent &event);
+
+private:
+	bool	mOnFocusMoving;
+	
 };
 

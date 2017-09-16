@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <rect.h>
-#include <brush.h>
+#include <gdiobj.h>
 
 class Window;
 class Painter;

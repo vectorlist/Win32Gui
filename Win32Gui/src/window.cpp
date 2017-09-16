@@ -23,6 +23,7 @@ Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
 
 Window::~Window()
 {
+	SAFE_DELETE_WND(mHandle);
 	SAFE_DELETE(mTitlebar);
 	SAFE_DELETE(mResizer);
 }
@@ -51,10 +52,11 @@ void Window::Create(HWND parent)
 	}
 
 	CREATESTRUCT cs{};
+
 	DWORD singleStyle = WS_OVERLAPPED | WS_THICKFRAME | WS_VISIBLE;
 	DWORD childStyle = WS_CHILD | WS_VISIBLE;
 	cs.style = parent ? childStyle : singleStyle;
-
+	cs.lpszClass = wc.lpszClassName;
 	cs.x = mSizeInfo.x;
 	cs.y = mSizeInfo.y;
 	cs.cx = mSizeInfo.w;
@@ -64,13 +66,14 @@ void Window::Create(HWND parent)
 
 	cs.style &= ~WS_VISIBLE;
 	cs.hMenu = NULL;
-	
-
+	cs.dwExStyle = NULL;
+	cs.lpszName = GetWideWindowName().c_str();
 	//changeable by derived class
 	PreCreate(cs);
 
-	mHandle = CreateWindowEx(NULL,
-		wc.lpszClassName, GetWideWindowName().c_str(), cs.style,
+	mHandle = CreateWindowEx(cs.dwExStyle, cs.lpszClass, 
+		cs.lpszName,
+		cs.style,
 		cs.x, cs.y, cs.cx, cs.cy, parent, cs.hMenu, App->GetInstance(), cs.lpCreateParams);
 	if (!mHandle) {
 		LOG_FATAL("failed to create window");
@@ -140,9 +143,14 @@ void Window::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
 	//LOG << "resize" << ENDN;
 }
 
-void Window::KeyPressedEvent(WPARAM wp)
+void Window::KeyPressedEvent(KeyEvent &event)
 {
-	UNUSED(wp);
+	UNUSED(event);
+}
+
+void Window::KeyReleaseEvent(KeyEvent &event)
+{
+	UNUSED(event);
 }
 
 void Window::MouseMoveEvent(MouseEvent &event)
@@ -151,6 +159,16 @@ void Window::MouseMoveEvent(MouseEvent &event)
 }
 
 void Window::MousePressEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
+void Window::MouseReleaseEvent(MouseEvent &event)
+{
+	UNUSED(event);
+}
+
+void Window::MouseHooverEvent(MouseEvent &event)
 {
 	UNUSED(event);
 }
@@ -170,7 +188,6 @@ void Window::Update()
 {
 }
 
-
 LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 {
 	return HTCLIENT;
@@ -179,8 +196,8 @@ LRESULT Window::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 {
 	//local event
-	Painter painter;
-	MouseEvent me{msg, wp, lp};
+	KeyEvent ke{ wp,lp };
+	MouseEvent me{ msg, wp, lp };
 
 	switch (msg)
 	{
@@ -191,41 +208,60 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		break;
 	case WM_PAINT: 
 	{
-		painter.Begin(*this);
+		Painter painter(*this);
 		PrePaintEvent(&painter);
 		PaintEvent(&painter); 
-		painter.End(*this);
 		break;
 	}
 	//case WM_MOUSEMOVE:	return HitEvent(msg, wp, lp);
 	case WM_SETFOCUS:
-		LOG << "focus on  : " << GetWindowName() << ENDN;
+		//LOG << "focus on  : " << GetWindowName() << ENDN;
 		break;
 	case WM_KILLFOCUS:
-		LOG << "focus off : " << GetWindowName()<< ENDN;
+		//LOG << "focus off : " << GetWindowName()<< ENDN;
 		break;
 	case WM_ACTIVATE:
-		LOG << "active    : " << GetWindowName() << ENDN;
+		//LOG << "active    : " << GetWindowName() << ENDN;
+		break;
+	case WM_MOUSEHOVER:
+	{
+		if (!mIsEntered) {
+			mIsEntered = true;
+			PostMessage(*this, UWM_ENTEREVENT, wp, lp);
+		}
+		MouseHooverEvent(me);
+		break;
+	}
+	case UWM_ENTEREVENT:						//user defined message from hoover message at once
+		MouseEnterEvent(me);
+		break;
+	case WM_MOUSELEAVE:
+		if (mIsEntered) mIsEntered = false;
+		MouseLeaveEvent(me);
 		break;
 	case WM_MOUSEMOVE:
 	{
+		if (IsMouseTracking())
+		{
+			TRACKMOUSEEVENT tm{};
+			tm.cbSize = sizeof(tm);
+			tm.dwFlags = TME_HOVER | TME_LEAVE;
+			tm.hwndTrack = *this;
+			tm.dwHoverTime = 10;
+			TrackMouseEvent(&tm);
+		}
 		MouseMoveEvent(me);
 		break;
 	}
-	case WM_LBUTTONDOWN:
-	{
-		MousePressEvent(me);
-		break;
-	}
+	
+	case WM_LBUTTONDOWN:	MousePressEvent(me);	break;
+	case WM_LBUTTONUP:		MouseReleaseEvent(me);  break;
 	case WM_NCCALCSIZE:
 		//LOG << "cal " << GetWindowName() <<ENDN;
 		break;
 	case WM_NCHITTEST:	return HitEvent(msg, wp, lp);
 
-	case WM_KEYDOWN:	KeyPressedEvent(wp); break;
-	case WM_USER_PREPAREDESTROY:
-		LOG << "working user message" << ENDN;
-		break;
+	case WM_KEYDOWN:	KeyPressedEvent(ke); break;
 	}
 
 	return DefWindowProc(*this, msg, wp, lp);

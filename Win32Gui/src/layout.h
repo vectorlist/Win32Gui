@@ -36,6 +36,7 @@ public:
 	//unique this func
 	void Attach(Window* parent);
 	void AddWindow(Window* item);
+	void AddWindow(Layout* item);
 	std::vector<Window*>&	GetChilds();
 	SplitterList&			GetSplitters();
 	
@@ -45,13 +46,6 @@ public:
 protected:
 	virtual void	PreRegisterClass(WNDCLASS &wc);
 	virtual void	MouseMoveEvent(MouseEvent& event);
-
-
-	//layout built override
-	/*virtual void	UpdateLayout() = 0;*/
-
-	//custom window procedule func
-	LRESULT CALLBACK LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
 
 	Margin mMargin;
 private:
@@ -70,6 +64,9 @@ protected:
 	virtual void PreCreate(CREATESTRUCT& cs);
 
 	virtual void PaintEvent(Painter* painter);
+	virtual void MouseEnterEvent(MouseEvent &event);
+
+	//virtual void ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
 
 
 private:

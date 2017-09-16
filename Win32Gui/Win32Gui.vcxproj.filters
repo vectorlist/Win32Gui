@@ -22,6 +22,9 @@
     <Filter Include="src\win32">
       <UniqueIdentifier>{4a6d96f6-5971-4794-93c9-e7da05b5172b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\win32\core">
+      <UniqueIdentifier>{12a1574b-a5bc-4435-877f-ee903657918f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\config\stdconfig.h">
@@ -31,9 +34,6 @@
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="..\include\config\win32utils.h">
-      <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\config\brush.h">
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="..\include\config\config.h">
@@ -93,6 +93,9 @@
     <ClInclude Include="src\splitter.h">
       <Filter>src\win32</Filter>
     </ClInclude>
+    <ClInclude Include="src\gdiobj.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\widget.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="src\splitter.cpp">
       <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gdiobj.cpp">
+      <Filter>src\win32\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

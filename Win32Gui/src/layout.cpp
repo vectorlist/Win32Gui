@@ -8,6 +8,7 @@ Layout::Layout(HWND parent)
 {
 	//we dont create here
 	//Create(NULL);
+	SetWindowName(WINDOWNAME_HLAYOUT);
 }
 
 Layout::~Layout()
@@ -55,6 +56,17 @@ void Layout::AddWindow(Window *item)
 	UpdateLayout();
 }
 
+void Layout::AddWindow(Layout *item)
+{
+	mWindows.AddElement(this, item);
+	item->SetParentWindow(*this);
+
+	DWORD style = WS_CHILD | WS_VISIBLE;
+	win::ChangeWindowStyle(*item, style);
+
+	UpdateLayout();
+}
+
 std::vector<Window*>& Layout::GetChilds()
 {
 	return mWindows.mWindow;
@@ -68,33 +80,6 @@ SplitterList& Layout::GetSplitters()
 void Layout::MouseMoveEvent(MouseEvent &event)
 {
 	//LOG << event.GetPos() << ENDN;
-}
-
-/*local custom window procedule func*/
-LRESULT Layout::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
-{
-	Painter painter;
-	MouseEvent me{ msg, wp, lp };
-	switch (msg)
-	{
-	case WM_PAINT:
-		//LOG << "layout paint" << ENDN;
-		painter.Begin(*this);
-		//PrePaintEvent(&painter);
-		PaintEvent(&painter);
-		painter.End(*this);
-		break;
-	case WM_MOUSEMOVE: MouseMoveEvent(me); break;
-	case WM_NOTIFY:
-		LOG << "call notify" << ENDN;
-		break;
-
-	case WM_SIZE:
-		LOG << "layout wm_size" << ENDN;
-		break;
-	
-	}
-	return DefWindowProc(*this, msg, wp, lp);
 }
 
  /*-------------------------- HBox Layout -----------------------------*/
@@ -117,9 +102,22 @@ void HBoxLayout::PreCreate(CREATESTRUCT & cs)
 void HBoxLayout::PaintEvent(Painter * painter)
 {
 	LOG << "HBox layout paint" << ENDN;
-	painter->SetBrush(Brush(70, 100, 130));
+	painter->SetBrush(GetBrush());
 	painter->FillRect(GetRect());
+	painter->SetFont(FONT_SYSTEM);
+	auto a = GetWindowName();
+	painter->FillText(0, 0, GetWindowName());
 }
+
+void HBoxLayout::MouseEnterEvent(MouseEvent & event)
+{
+	LOG << GetWindowName() << " entered" << ENDN;
+}
+
+//void HBoxLayout::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
+//{
+//	//UpdateLayout();
+//}
 
 void HBoxLayout::UpdateLayout()
 {
@@ -136,48 +134,32 @@ void HBoxLayout::UpdateLayout()
 		Rect rect = GetRect() - mMargin;
 		child->Move(rect);				//move call WM_PAINT
 	}
+	//over 2 windows on layout
+	Rect layRect = GetRect() - mMargin;
 
-	int layWidth = Width();
-	int layHeight = Height();
-	/*if (childs.size() > 1)
-	{
-		if (child->IsSplitter()) {
-
-		}
-		int winSize =  layWidth / childs.size();
-		LOG << "dynamic winsize " << winSize << ENDN;
-		int x = 0;
-		for (int i = 0; i < childs.size(); ++i)
-		{
-			x = winSize * i;
-			child = childs[i];
-			child->Move(x, GetRect().top, winSize, Height());
-		}
-	}*/
-	//draw by splitter
 	auto& splitters = GetSplitters();
 
-	SplitterList::iterator it;
-
-	int i = 0;
-	
-	for (it = splitters.begin(); it != splitters.end(); ++it,++i)
+	//initial position (handle by splitter)
+	for (int i = 0; i < splitters.size(); ++i)
 	{
-		Splitter* splitter = (Splitter*)it._Ptr;
+		Splitter* splitter = splitters[i].get();
 		Window* left = splitter->mLeft;
-		Window* right = splitter->mLeft;
+		Window* right = splitter->mRight;
 
-		int wndSize = (layWidth / 2 ) - (splitter->mFixedSize/2);
+		int wndSize = (layRect.Width() / 2) - (splitter->mFixedSize / 2);
+		int pureW = GetRect().Width();
+		int totalW = layRect.Width();
+
 		int x = wndSize;
 
-		left->Move(x * 0, GetPos().y, wndSize, Height());
-		splitter->Move(left->GetRect().left, GetPos().y, splitter->mFixedSize, Height());
-		right->Move(x * 1 + splitter->mFixedSize, GetPos().y, wndSize, Height());
+		//TODO : Left rect -> Splitter rect -> Right Rect
+		left->Move(layRect.left, layRect.top, wndSize, layRect.Height());
+		Rect lRect = left->MapFormParentRect(*this);
+		splitter->Move(lRect.right, lRect.top, splitter->mFixedSize, lRect.Height());
+		Rect spRect = splitter->MapFormParentRect(*this);
+		
+		right->Move(spRect.right, spRect.top, wndSize, spRect.Height());
 	}
-	/*for (int i = 0; i < splitter.size(); ++i)
-	{
-		Splitter* splitter = splitter[i].;
-	}*/
 
 
 	LOG << "update layouts and childs" << ENDN;

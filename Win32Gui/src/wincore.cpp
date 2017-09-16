@@ -57,7 +57,7 @@ LRESULT Resizer::HitEvent(Window* window, LPARAM lp)
 TitleBar::TitleBar(HWND handle, int fixedSize)
 	: mHandle(handle), mFixedSize(fixedSize), mActive(true)
 {
-	SetBrush(Brush(160, 60, 60));
+	SetBrush(Brush(60, 65, 70));
 }
 
 void TitleBar::SetSize(int size)

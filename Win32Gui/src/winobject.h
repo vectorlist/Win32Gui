@@ -42,6 +42,8 @@ public:
 	Point			GetPos() const;
 	Size			GetSize() const;
 
+	Rect			MapFormParentRect(HWND parent);
+
 	Brush&			GetBrush();
 	void			SetBrush(const Brush& brush);
 
@@ -51,10 +53,13 @@ public:
 	void			InvalidateRect(bool bRepaint = TRUE);
 	void			InvalidateALL(bool bRepaint = TRUE);
 
-	bool			GetTrackMouseEnable() const;
-	void			SetTrackMouseEnable(bool enable);
+	bool			IsMouseTracking() const;
+	void			SetMouseTracking(bool enable);
 
 	void			SetParentWindow(HWND parent);
+
+	//other condition
+	bool			IsKeyPressed(int keyCode);
 	
 	operator HWND() { return mHandle; }
 
@@ -65,10 +70,9 @@ protected:
 	HWND			mParent;
 	
 	CreateSizeInfo  mSizeInfo;
+	bool			mIsEntered;
 private:
 	std::string		mWindowName;
-	/*Point			mPos;
-	Size			mSize;*/
 	Brush			mBrush;
-	bool			mEnableTrackMouse;
+	bool			mIsMouseTracking;
 };

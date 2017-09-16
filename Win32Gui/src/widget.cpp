@@ -47,8 +47,8 @@ void Widget::PrePaintEvent(Painter *painter)
 
 void Widget::OnCreateEvent(CREATESTRUCT & cs)
 {
-	//mTitlebar = new TitleBar(*this);
-	//mTitlebar->SetActive(false);
+	mTitlebar = new TitleBar(*this);
+	mTitlebar->SetActive(false);
 	//mResizer = new Resizer();
 
 }
@@ -59,15 +59,22 @@ void Widget::PaintEvent(Painter *painter)
 	Rect rect = GetActiveRect();
 	painter->SetBrush(GetBrush());
 	painter->FillRect(rect);
+	painter->SetFont(FONT_SYSTEM);
+	painter->FillText(0, 0, GetWindowName());
 }
 
 void Widget::MouseMoveEvent(MouseEvent &event)
 {
-	LOG << event.GetPos() << " " << GetWindowName() << ENDN;
+	//LOG << event.GetPos() << " " << GetWindowName() << ENDN;
 }
 
 void Widget::MousePressEvent(MouseEvent &event)
 {
 	//LOG << pos << ENDN;
+}
+
+void Widget::MouseEnterEvent(MouseEvent & event)
+{
+	LOG << GetWindowName() << " entered" << ENDN;
 }
 

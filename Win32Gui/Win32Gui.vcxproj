@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\config\brush.h" />
     <ClInclude Include="..\include\config\config.h" />
     <ClInclude Include="..\include\config\log.h" />
     <ClInclude Include="..\include\config\macroconfig.h" />
@@ -33,6 +32,7 @@
     <ClInclude Include="src\button.h" />
     <ClInclude Include="src\custombutton.h" />
     <ClInclude Include="src\event.h" />
+    <ClInclude Include="src\gdiobj.h" />
     <ClInclude Include="src\mainwindow.h" />
     <ClInclude Include="src\polygon.h" />
     <ClInclude Include="src\splitter.h" />
@@ -46,6 +46,7 @@
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\button.cpp" />
+    <ClCompile Include="src\gdiobj.cpp" />
     <ClCompile Include="src\layout.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mainwindow.cpp" />

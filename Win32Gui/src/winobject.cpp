@@ -2,17 +2,12 @@
 #include <application.h>
 
 WinObject::WinObject(HWND parent)
-	: mParent(parent), mHandle(NULL), mEnableTrackMouse(true)
+	: mParent(parent), mHandle(NULL), mIsMouseTracking(true), mIsEntered(false)
 {
 }
 
 WinObject::~WinObject()
 {
-	if (mHandle) {
-		//App->RemoveWindowFromMap(mHandle);
-		DestroyWindow(mHandle);
-		mHandle = NULL;
-	}
 }
 
 void WinObject::Show()
@@ -112,7 +107,7 @@ void WinObject::Move(const Point &pos, const Size &size, bool bRepaint)
 
 void WinObject::Move(const Rect &rect, bool bRepaint)
 {
-	::MoveWindow(mHandle, rect.left, rect.top, rect.GetWidth(), rect.GetHeight(), bRepaint);
+	::MoveWindow(mHandle, rect.left, rect.top, rect.Width(), rect.Height(), bRepaint);
 }
 
 /* set postion window on screen without change size*/
@@ -138,7 +133,16 @@ Point WinObject::GetPos() const
 Size WinObject::GetSize() const
 {
 	Rect rect = GetRect();
-	return Size(rect.GetWidth(), rect.GetHeight());
+	return Size(rect.Width(), rect.Height());
+}
+
+Rect WinObject::MapFormParentRect(HWND parent)
+{
+	//https://stackoverflow.com/questions/18034975/how-do-i-find-position-of-a-win32-control-window-relative-to-its-parent-window
+	Rect rect;
+	::GetClientRect(mHandle, &rect);		//get this window rect
+	::MapWindowPoints(*this, parent, (POINT*)&rect, 2);
+	return rect;
 }
 
 Brush& WinObject::GetBrush()
@@ -172,14 +176,14 @@ void WinObject::InvalidateALL(bool bRepaint)
 	::InvalidateRect(*this, NULL, bRepaint);
 }
 
-bool WinObject::GetTrackMouseEnable() const
+bool WinObject::IsMouseTracking() const
 {
-	return mEnableTrackMouse;
+	return mIsMouseTracking;
 }
 
-void WinObject::SetTrackMouseEnable(bool enable)
+void WinObject::SetMouseTracking(bool enable)
 {
-	mEnableTrackMouse = enable;
+	mIsMouseTracking = enable;
 }
 
 void WinObject::SetParentWindow(HWND parent)
@@ -188,9 +192,12 @@ void WinObject::SetParentWindow(HWND parent)
 	mParent = parent;
 }
 
+bool WinObject::IsKeyPressed(int keyCode)
+{
+	return (GetAsyncKeyState(keyCode) & 0x8000) != 0;
+}
+
 /*for the check splitter window*/
-
-
 bool WinObject::IsSplitter()
 {
 	return false;

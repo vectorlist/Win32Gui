@@ -18,7 +18,7 @@ protected:
 
 	virtual void OnCreateEvent(CREATESTRUCT &cs);
 	virtual void PaintEvent(Painter* painter) OVERRIDE;
-	virtual void KeyPressedEvent(WPARAM wp);
+	virtual void KeyPressedEvent(KeyEvent &event);
 
 	virtual void ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
 

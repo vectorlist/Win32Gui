@@ -22,7 +22,7 @@ void Button::PreCreate(CREATESTRUCT &cs)
 {
 	//set style and hMenu
 	DWORD style = WS_CHILD | WS_VISIBLE | BS_OWNERDRAW;		//item for own draw
-	cs.dwExStyle = style;
+	cs.style = style;
 	cs.hMenu = (HMENU)BT_CLOSE;
 	cs.lpCreateParams = this;
 
@@ -80,10 +80,8 @@ void Button::MousePressEvent(MouseEvent &event)
 		break;
 	case ButtonType::Close:
 	{
-		//not safe if it is not main
-		//'Window* mainWindow = App->GetWindowFromMap(mParent);
-
-		SendMessage(*this, WM_CLOSE, NULL, NULL);
+		//direct to post message to dispatch message loop
+		PostQuitMessage(0);
 		break;
 	}
 	case ButtonType::User:
@@ -120,18 +118,16 @@ void Button::MouseLeaveEvent(MouseEvent & event)
 */
 HRESULT CALLBACK Button::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 {
-	Painter painter;
 	//MouseEvent me(msg, wp, lp);
 	MouseEvent me{ msg, wp, lp };
 	switch (msg)
 	{
 	case WM_PAINT:
-		painter.Begin(*this);
+	{
+		Painter painter(*this);
 		PaintEvent(&painter);
-		painter.End(*this);
-		LOG << "button paint" << ENDN;
 		break;
-
+	}
 	case WM_MOUSEHOVER: this->MouseEnterEvent(me); break;
 	case WM_MOUSELEAVE: this->MouseLeaveEvent(me); break;
 	case WM_LBUTTONDOWN:
@@ -150,7 +146,7 @@ HRESULT CALLBACK Button::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		LOG << "button size" << ENDN;
 		break;
 	case WM_MOUSEMOVE:
-		if (GetTrackMouseEnable()) {
+		if (IsMouseTracking()) {
 			TRACKMOUSEEVENT tm{};
 			tm.cbSize = sizeof(tm);
 			tm.dwFlags = TME_HOVER | TME_LEAVE;

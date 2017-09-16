@@ -40,17 +40,17 @@ void MainWindow::OnCreateEvent(CREATESTRUCT &cs)
 void MainWindow::PaintEvent(Painter *painter)
 {
 	painter->SetTextColor(RGB(200, 200, 200));
-	painter->SetTextBgColor(painter->GetBrush().GetColor());
-	painter->Text(10, 10, TEXT("Hellow"));
+	painter->SetTextBgColor(painter->GetBrush().Color());
+	painter->SetFont(FONT_SYSTEM);
+	painter->Text(0, 0, TO_WSTRING(GetWindowName()).c_str());
 	
 	LOG << "main window paint" << ENDN;
 }
 
-void MainWindow::KeyPressedEvent(WPARAM wp)
+void MainWindow::KeyPressedEvent(KeyEvent &event)
 {
-	if (wp == VK_ESCAPE) {
-		LOG << "send close event" << ENDN;
-		SendMessage(mHandle, WM_CLOSE, NULL, NULL);
+	if (event.wp == VK_ESCAPE) {
+		PostQuitMessage(0);
 	}
 }
 

@@ -11,7 +11,7 @@
 
 //winapi
 #include <CommCtrl.h>
-#include <brush.h>
+#include <gdiobj.h>
 #include <Point.h>
 #include <rect.h>
 #include <painter.h>

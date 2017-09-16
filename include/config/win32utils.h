@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Windows.h>
-#include <brush.h>
+#include <gdiobj.h>
+#include <string>
 /*------------------- custom window message ------------------------*/
 #define CWM_WINDOWCREATED		::RegisterWindowMessage(TEXT("CWM_WINDOWCREATED"))
 #define CWM_UPDATED				::RegisterWindowMessage(TEXT("CWM_UPDATED"))
@@ -21,6 +22,10 @@
 //splitter
 #define CLASSNAME_SPLITTER		TEXT("SplitterClass")
 
+/*------------------- custom window names  -------------------*/
+#define WINDOWNAME_HLAYOUT		"HBox Layout"
+
+//def operators
 
 
 struct CompareWindow
@@ -53,7 +58,15 @@ namespace  win
 		SetParent(src, parent);
 		SetWindowLong(src, GWL_STYLE, srcStyle);
 	}
+	/*coverte string to wide string*/
+	inline std::wstring ToWString(const std::string &code)
+	{
+		std::wstring output(code.begin(), code.end());
+		return output;
+	}
 }
+
+#define TO_WSTRING(x)			win::ToWString(x)
 
 inline std::ostream& operator<<(std::ostream &os, const RECT &rc)
 {

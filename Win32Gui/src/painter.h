@@ -1,35 +1,35 @@
 #pragma once
 
 #include <Windows.h>
-//#include <cwchar>
 #include <rect.h>
-#include <brush.h>
+#include <gdiobj.h>
 #include <polygon.h>
+#include <string>
 
 
 class Painter
 {
 public:
-	Painter() : dc(NULL) {}
+	Painter(HWND handle);
+	~Painter();
 	HDC			dc;
 	PAINTSTRUCT ps;
 	//expensive but easy to use
 	Brush		brush;
-	//Pen			pen;
-	
-
-	void Begin(HWND handle) { dc = BeginPaint(handle, &ps); }
-	void End(HWND handle) { EndPaint(handle, &ps); }
+	HWND        mHandle;
 
 	//Brush
-	void SetBrush(Brush b) { brush = b; }
+	void SetBrush(Brush &b) { brush = b; }
 	Brush GetBrush() { return brush; }
 
-	//Pen
-	void SetPen(Pen p);
+	void SetFont(Font &font);
+	void SetPen(Pen &p);
 
 	void FillRect(const RECT &rect) { ::FillRect(dc, &rect, brush); }
-	void Text(int x, int y, const wchar_t* text) { TextOut(dc, x, y, text, lstrlen(text)); }
+
+	void Text(int x, int y, const wchar_t* text);
+	void FillText(int x, int y, const std::string &text, Color color = Color(200));
+
 	void SetTextColor(const COLORREF &color) { ::SetTextColor(dc, color); }
 	void SetTextBgColor(const COLORREF &color) { ::SetBkColor(dc, color); }
 

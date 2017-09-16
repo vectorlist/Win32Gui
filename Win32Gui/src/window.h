@@ -2,7 +2,9 @@
 
 #include <winobject.h>
 
-#define WM_USER_PREPAREDESTROY     (WM_USER + 0)
+//User Wnd Message
+#define UWM_PREPAREDESTROY		(WM_USER + 0)
+#define UWM_ENTEREVENT			(WM_USER + 1)
 
 #define POINT_IN_RECT(x,xx)		::PtInRect(x,x)
 
@@ -27,19 +29,19 @@ protected:
 	virtual void	OnCreateEvent(CREATESTRUCT& cs);
 	virtual void	PaintEvent(Painter* painter);
 	virtual void	ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp);
-	virtual void	KeyPressedEvent(WPARAM wp);
+	virtual void	KeyPressedEvent(KeyEvent &event);
+	virtual void	KeyReleaseEvent(KeyEvent &event);
 
 	//Mouse
 	virtual void	MouseMoveEvent(MouseEvent &event);
 	virtual void	MousePressEvent(MouseEvent &event);
+	virtual void	MouseReleaseEvent(MouseEvent &event);
+	virtual void	MouseHooverEvent(MouseEvent &event);
 	virtual void	MouseEnterEvent(MouseEvent &event);
 	virtual void	MouseLeaveEvent(MouseEvent &event);
 
-
 	//Update
 	virtual void	Update();
-
-
 
 	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
