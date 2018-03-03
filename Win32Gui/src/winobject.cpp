@@ -2,7 +2,7 @@
 #include <application.h>
 
 WinObject::WinObject(HWND parent)
-	: mParent(parent), mHandle(NULL), mIsMouseTracking(true), mIsEntered(false)
+	: mParent(parent), mHandle(NULL), mIsMouseTracking(true), mOnEnter(false)
 {
 }
 

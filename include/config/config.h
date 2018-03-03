@@ -10,7 +10,7 @@
 #include <log.h>
 
 //winapi
-#include <CommCtrl.h>
+
 #include <gdiobj.h>
 #include <Point.h>
 #include <rect.h>
@@ -19,6 +19,15 @@
 #include <win32utils.h>
 #include <event.h>
 #include <polygon.h>
+#include <tchar.h>
+#include <colordef.h>
+
+//Common Control
+#include <CommCtrl.h>
+#pragma comment (lib, "comctl32.lib")
+
+//GDI+ 
+#include <gdi+.h>
 
 #define OVERRIDE		override
 

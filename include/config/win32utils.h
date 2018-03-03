@@ -64,6 +64,31 @@ namespace  win
 		std::wstring output(code.begin(), code.end());
 		return output;
 	}
+
+
+	inline void PaintRect(HDC hdc, RECT *rect, COLORREF colour)
+	{
+		COLORREF oldcr = SetBkColor(hdc, colour);
+		ExtTextOutA(hdc, 0, 0, ETO_OPAQUE, rect, "", 0, 0);
+		SetBkColor(hdc, oldcr);
+	}
+
+	//inline void ToWChar(const char* code, wchar_t* output)
+	//{
+	//	wchar_t* wcode = new wchar_t[strlen(code) + 1];
+	//	mbstowcs(wcode, code, strlen(code) + 1);
+	//	wcscpy(output, wcode);
+	//	delete[] wcode;
+	//}
+	inline void SetConsoleOutput(int x, int y, int w, int h)
+	{
+		AllocConsole();
+		AttachConsole(GetCurrentProcessId());
+		FILE *stream;
+		freopen_s(&stream, "CONOUT$", "w", stdout);
+		HWND console = GetConsoleWindow();
+		MoveWindow(console, x, y, w, h, TRUE);
+	}
 }
 
 #define TO_WSTRING(x)			win::ToWString(x)

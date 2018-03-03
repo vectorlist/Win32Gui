@@ -39,9 +39,9 @@ void Button::PreCreate(CREATESTRUCT &cs)
 void Button::PaintEvent(Painter *painter)
 {
 	//background
-	static Brush brush(100, 100, 100);
-	static Brush onBrush(130, 130, 130);
-	if (OnEnter)
+	static Brush brush(COLOR_TITLEBAR);
+	static Brush onBrush(COLOR_TITLEBAR_HL);
+	if (mOnEnter)
 		painter->SetBrush(onBrush);
 	else
 		painter->SetBrush(brush);
@@ -97,72 +97,12 @@ void Button::MouseMoveEvent(MouseEvent &event)
 
 void Button::MouseEnterEvent(MouseEvent &event)
 {
-	if (!OnEnter) {
-		OnEnter = true;
-		LOG << "enter" << ENDN;
-		InvalidateRect();
-	}
+	InvalidateRect();
 }
 
 void Button::MouseLeaveEvent(MouseEvent & event)
 {
-	if (OnEnter) {
-		OnEnter = false;
-		LOG << "leave" << ENDN;
-		InvalidateRect();
-	}
-}
-
-/*
-* override local wnd proc for button window
-*/
-HRESULT CALLBACK Button::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
-{
-	//MouseEvent me(msg, wp, lp);
-	MouseEvent me{ msg, wp, lp };
-	switch (msg)
-	{
-	case WM_PAINT:
-	{
-		Painter painter(*this);
-		PaintEvent(&painter);
-		break;
-	}
-	case WM_MOUSEHOVER: this->MouseEnterEvent(me); break;
-	case WM_MOUSELEAVE: this->MouseLeaveEvent(me); break;
-	case WM_LBUTTONDOWN:
-		this->MousePressEvent(me);
-		break;
-
-	case WM_COMMAND:
-		LOG << "working" << ENDN;
-		break;
-
-	case WM_DRAWITEM:
-		//TODO : paint item by menu name
-		LOG << "draw item enable" << ENDN;
-		break;
-	case WM_SIZE:
-		LOG << "button size" << ENDN;
-		break;
-	case WM_MOUSEMOVE:
-		if (IsMouseTracking()) {
-			TRACKMOUSEEVENT tm{};
-			tm.cbSize = sizeof(tm);
-			tm.dwFlags = TME_HOVER | TME_LEAVE;
-			tm.dwHoverTime = 1;				//interval millisecond less num more smooth
-			tm.hwndTrack = *this;
-			//call track mouse event
-			TrackMouseEvent(&tm);
-		}
-		this->MouseMoveEvent(me);
-		break;
-	case WM_DESTROY:
-		//DestroyEvent(Coustom Event)
-		break;
-	}
-	//replace to static wndproc
-	return DefWindowProc(*this, msg, wp, lp);
+	InvalidateRect();
 }
 
 void Button::DrawUser(Painter *painter)
@@ -174,7 +114,7 @@ void Button::DrawMin(Painter *painter)
 {
 	int space = 9;
 	//test
-	Pen pen(PS_SOLID, 2, Color(200, 200, 200));
+	static Pen pen(PS_SOLID, 2, Color(200, 200, 200));
 	painter->SetPen(pen);
 
 	Poly p;
@@ -183,19 +123,19 @@ void Button::DrawMin(Painter *painter)
 
 	p << Point(space, height - space) << Point(width - space, height - space);
 
-	painter->PaintPolygon(p);
+	painter->DrawPolygon(p);
 }
 
-void Button::DrawMax(Painter * painter)
+void Button::DrawMax(Painter *painter)
 {
 	//TODO MAX
 }
 
-void Button::DrawClose(Painter * painter)
+void Button::DrawClose(Painter *painter)
 {
 	int space = 10;
 
-	Pen pen(PS_GEOMETRIC, 2, Color(200, 200, 200));
+	static Pen pen(PS_GEOMETRIC, 2, Color(200, 200, 200));
 	painter->SetPen(pen);
 
 	Point a(space , space);
@@ -204,8 +144,18 @@ void Button::DrawClose(Painter * painter)
 	Point c(space, Height() - space);
 	Point d(Width() - space, space);
 
-	painter->PaintLine(a, b);
-	painter->PaintLine(c, d);
+	painter->DrawLine(a, b);
+	painter->DrawLine(c, d);
+
+	//GGraphics g(painter->dc);
+	////GBrush b(GColor(255, 200, 200, 200));
+	//GPen gp(GColor(220,220,220), 2);
+	////g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	//g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	//g.DrawLine(&gp, space, space, Width() - space, Width() - space);
+	//GPoint p2(space, Height() - space);
+	//GPoint p3(Width() - space, space);
+	//g.DrawLine(&gp, p2, p3);
 }
 
 

@@ -114,5 +114,9 @@ LRESULT TitleBar::HitEvent(LPARAM lp)
 	if (!mActive) return LNULL;
 	Rect rect = GetTitlebarRect();
 	//LOG << rect << ENDN;
-	return LNULL;
+	Point p(lp);
+	::ScreenToClient(mHandle, &p);
+	if (PtInRect(&rect, p))
+		return HTCAPTION;
+	return HTCLIENT;
 }

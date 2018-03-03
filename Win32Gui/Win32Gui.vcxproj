@@ -30,12 +30,18 @@
     <ClInclude Include="..\include\config\win32utils.h" />
     <ClInclude Include="src\application.h" />
     <ClInclude Include="src\button.h" />
+    <ClInclude Include="src\colordef.h" />
+    <ClInclude Include="src\combobox.h" />
     <ClInclude Include="src\custombutton.h" />
     <ClInclude Include="src\event.h" />
     <ClInclude Include="src\gdiobj.h" />
+    <ClInclude Include="src\gdi+.h" />
+    <ClInclude Include="src\lineedit.h" />
+    <ClInclude Include="src\listbox.h" />
     <ClInclude Include="src\mainwindow.h" />
     <ClInclude Include="src\polygon.h" />
     <ClInclude Include="src\splitter.h" />
+    <ClInclude Include="src\treeview.h" />
     <ClInclude Include="src\wincore.h" />
     <ClInclude Include="src\layout.h" />
     <ClInclude Include="src\painter.h" />
@@ -46,12 +52,16 @@
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\button.cpp" />
+    <ClCompile Include="src\combobox.cpp" />
     <ClCompile Include="src\gdiobj.cpp" />
     <ClCompile Include="src\layout.cpp" />
+    <ClCompile Include="src\lineedit.cpp" />
+    <ClCompile Include="src\listbox.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mainwindow.cpp" />
     <ClCompile Include="src\painter.cpp" />
     <ClCompile Include="src\splitter.cpp" />
+    <ClCompile Include="src\treeview.cpp" />
     <ClCompile Include="src\widget.cpp" />
     <ClCompile Include="src\wincore.cpp" />
     <ClCompile Include="src\window.cpp" />
@@ -120,6 +130,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)include;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comctl32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

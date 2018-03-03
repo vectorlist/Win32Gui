@@ -38,19 +38,47 @@ void Painter::FillText(int x, int y, const std::string &text, Color color)
 }
 
 /*paint single polygon*/
-void Painter::PaintPolygon(const Poly &poly)
+void Painter::DrawPolygon(const Poly &poly)
 {
 	Polygon(dc, poly,  poly.Size());
 }
 
 /*paint multiple polygon*/
-void Painter::PaintPolygons(int* group, const Poly &poly)
+void Painter::DrawPolygons(int* group, const Poly &poly)
 {
 	PolyPolygon(dc, poly, group, poly.Size());
 }
 
-void Painter::PaintLine(const Point &a, const Point &b)
+void Painter::DrawLine(const Point &a, const Point &b)
 {
 	MoveToEx(dc, a.x, a.y, NULL);
 	LineTo(dc, b.x, b.y);
+}
+
+void Painter::DrawLine(int ax, int ay, int bx, int by)
+{
+	::MoveToEx(dc, ax, ay, NULL);
+	::LineTo(dc, bx, by);
+}
+
+void Painter::DrawRetangle(int l, int r, int t, int b)
+{
+	::Rectangle(dc, l, t, r, b);
+}
+
+void Painter::DrawString(const char* code, Rect &rect, UINT flag)
+{
+	::DrawTextA(dc, code, -1, &rect, flag);
+}
+
+void Painter::DrawStringW(const wchar_t * code, Rect & rect, UINT flag)
+{
+	::DrawText(dc, code, -1, &rect, flag);
+}
+
+void Painter::DrawRect(Rect & rect, const Color &color)
+{
+	COLORREF oldcr = SetBkColor(dc, color);
+	ExtTextOutA(dc, 0, 0, ETO_OPAQUE, rect, "", 0, 0);
+	SetBkColor(dc, oldcr);
 }

@@ -2,6 +2,10 @@
 
 /*----------------------- Brush  ---------------------*/
 
+Brush Brush::WindowBrush = Brush(80, 80, 80);
+Brush Brush::WidgetBrush = Brush(60, 60, 60);
+Brush Brush::TitleBrush = Brush(60, 63, 65);
+
 Brush::Brush()
 {
 

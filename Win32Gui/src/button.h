@@ -34,9 +34,6 @@ protected:
 	virtual void	MouseMoveEvent(MouseEvent &event);
 	virtual void	MouseEnterEvent(MouseEvent &event);
 	virtual void	MouseLeaveEvent(MouseEvent &event);
-	//override local window procedule
-	virtual HRESULT CALLBACK LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
-
 
 	//Draw Override for user Button
 	virtual void	DrawUser(Painter* painter);

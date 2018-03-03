@@ -70,7 +70,7 @@ protected:
 	HWND			mParent;
 	
 	CreateSizeInfo  mSizeInfo;
-	bool			mIsEntered;
+	bool			mOnEnter;
 private:
 	std::string		mWindowName;
 	Brush			mBrush;

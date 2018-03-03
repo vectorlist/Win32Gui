@@ -25,8 +25,7 @@ protected:
 	virtual HRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
 	virtual void Update();
-
 private:
 	Layout* mLayout;
-
+	Button* mCloseButton;
 };

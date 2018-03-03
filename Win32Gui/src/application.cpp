@@ -6,15 +6,16 @@ Application::Application()
 	: mInstance(NULL)
 {
 	gApp = this;
-	SetMemoryInstance();
+	InitMemoryInstance();
+	InitGdiplus();
 }
 
 Application::~Application()
 {
-
+	ReleaseGdiplus();
 }
 
-int Application::SetMemoryInstance()
+int Application::InitMemoryInstance()
 {
 	int result = 0;
 	MEMORY_BASIC_INFORMATION memInfo{};
@@ -71,7 +72,15 @@ void Application::RemoveWindowFromMap(HWND handle)
 	}
 }
 
+void Application::InitGdiplus()
+{
+	Gdiplus::GdiplusStartup(&mGdiplusTokken, &mGdiplusInput, NULL);
+}
 
+void Application::ReleaseGdiplus()
+{
+	Gdiplus::GdiplusShutdown(mGdiplusTokken);
+}
 
 int Application::Run()
 {

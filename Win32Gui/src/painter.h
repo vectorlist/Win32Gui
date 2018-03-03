@@ -19,8 +19,8 @@ public:
 	HWND        mHandle;
 
 	//Brush
-	void SetBrush(Brush &b) { brush = b; }
-	Brush GetBrush() { return brush; }
+	void	SetBrush(Brush &b) { brush = b; }
+	Brush	GetBrush() { return brush; }
 
 	void SetFont(Font &font);
 	void SetPen(Pen &p);
@@ -33,11 +33,17 @@ public:
 	void SetTextColor(const COLORREF &color) { ::SetTextColor(dc, color); }
 	void SetTextBgColor(const COLORREF &color) { ::SetBkColor(dc, color); }
 
-	void PaintPolygon(const Poly& poly);
-	void PaintPolygons(int* group, const Poly& poly);
+	void DrawPolygon(const Poly& poly);
+	void DrawPolygons(int* group, const Poly& poly);
 
-	void PaintLine(const Point& a, const Point& b);
+	void DrawLine(const Point& a, const Point& b);
+	void DrawLine(int ax, int ay, int bx, int by);
 
+	void DrawRetangle(int l, int r, int t, int b);
+	void DrawString(const char* code, Rect &rect, UINT flag = DT_LEFT);
+	void DrawStringW(const wchar_t* code, Rect &rect, UINT flag = DT_LEFT);
+
+	void DrawRect(Rect &rect, const Color &color);
 };
 
 

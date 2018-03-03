@@ -17,7 +17,7 @@ Window::Window(int x, int y, int w, int h, std::string title, HWND parent)
 	: WinObject(parent), mTitlebar(NULL), mResizer(NULL)
 {
 	SetWindowName(title);
-	mSizeInfo = CreateSizeInfo(x,y,w,h);
+	mSizeInfo = CreateSizeInfo(x, y, w, h);
 }
 
 
@@ -78,6 +78,11 @@ void Window::Create(HWND parent)
 	if (!mHandle) {
 		LOG_FATAL("failed to create window");
 	}
+}
+
+void Window::StaticCreate(HWND parent)
+{
+	UNUSED(parent);
 }
 
 Window* Window::GetParentWindow()
@@ -197,15 +202,20 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 {
 	//local event
 	KeyEvent ke{ wp,lp };
-	MouseEvent me{ msg, wp, lp };
+	MouseEvent me{ msg, wp, lp};
 
 	switch (msg)
 	{
-	case WM_CREATE:		OnCreateEvent(*(CREATESTRUCT*)lp); break;
+	case WM_CREATE:		
+		OnCreateEvent(*(CREATESTRUCT*)lp); 
+		break;
 	case WM_SIZE:
+	{
+		int w = LOWORD(lp);
 		ResizeEevnt(msg, wp, lp);
 		//Update();
 		break;
+	}
 	case WM_PAINT: 
 	{
 		Painter painter(*this);
@@ -225,8 +235,8 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		break;
 	case WM_MOUSEHOVER:
 	{
-		if (!mIsEntered) {
-			mIsEntered = true;
+		if (!mOnEnter) {
+			mOnEnter = true;
 			PostMessage(*this, UWM_ENTEREVENT, wp, lp);
 		}
 		MouseHooverEvent(me);
@@ -236,7 +246,7 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 		MouseEnterEvent(me);
 		break;
 	case WM_MOUSELEAVE:
-		if (mIsEntered) mIsEntered = false;
+		if (mOnEnter) mOnEnter = false;
 		MouseLeaveEvent(me);
 		break;
 	case WM_MOUSEMOVE:
@@ -247,7 +257,7 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 			tm.cbSize = sizeof(tm);
 			tm.dwFlags = TME_HOVER | TME_LEAVE;
 			tm.hwndTrack = *this;
-			tm.dwHoverTime = 10;
+			tm.dwHoverTime = 1;
 			TrackMouseEvent(&tm);
 		}
 		MouseMoveEvent(me);
@@ -255,7 +265,13 @@ LRESULT Window::LocalWndProc(UINT msg, WPARAM wp, LPARAM lp)
 	}
 	
 	case WM_LBUTTONDOWN:	MousePressEvent(me);	break;
+	case WM_MBUTTONDOWN:	MousePressEvent(me);	break;
+	case WM_RBUTTONDOWN:	MousePressEvent(me);	break;
+
 	case WM_LBUTTONUP:		MouseReleaseEvent(me);  break;
+	case WM_MBUTTONUP:		MouseReleaseEvent(me);  break;
+	case WM_RBUTTONUP:		MouseReleaseEvent(me);  break;
+
 	case WM_NCCALCSIZE:
 		//LOG << "cal " << GetWindowName() <<ENDN;
 		break;

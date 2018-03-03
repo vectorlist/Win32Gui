@@ -25,6 +25,9 @@
     <Filter Include="src\win32\core">
       <UniqueIdentifier>{12a1574b-a5bc-4435-877f-ee903657918f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\win32\Gui">
+      <UniqueIdentifier>{ad7d8e7f-3ff4-488e-9ef0-3b300a817565}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\config\stdconfig.h">
@@ -48,9 +51,6 @@
     <ClInclude Include="..\include\config\platformconfig.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="src\widget.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\layout.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -61,9 +61,6 @@
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="src\window.h">
-      <Filter>src\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="src\painter.h">
       <Filter>src\win32</Filter>
     </ClInclude>
     <ClInclude Include="src\winobject.h">
@@ -78,15 +75,6 @@
     <ClInclude Include="src\mainwindow.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\button.h">
-      <Filter>src\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="src\event.h">
-      <Filter>src\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="src\polygon.h">
-      <Filter>src\win32</Filter>
-    </ClInclude>
     <ClInclude Include="src\custombutton.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -96,11 +84,41 @@
     <ClInclude Include="src\gdiobj.h">
       <Filter>src\win32\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\gdi+.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\treeview.h">
+      <Filter>src\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\listbox.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\colordef.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\combobox.h">
+      <Filter>src\win32\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\button.h">
+      <Filter>src\win32\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\painter.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\polygon.h">
+      <Filter>src\win32\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\widget.h">
+      <Filter>src\win32\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lineedit.h">
+      <Filter>src\win32\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\widget.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\layout.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -119,20 +137,35 @@
     <ClCompile Include="src\application.cpp">
       <Filter>src\win32</Filter>
     </ClCompile>
-    <ClCompile Include="src\painter.cpp">
-      <Filter>src\win32</Filter>
-    </ClCompile>
     <ClCompile Include="src\mainwindow.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\button.cpp">
-      <Filter>src\win32</Filter>
     </ClCompile>
     <ClCompile Include="src\splitter.cpp">
       <Filter>src\win32</Filter>
     </ClCompile>
     <ClCompile Include="src\gdiobj.cpp">
       <Filter>src\win32\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\treeview.cpp">
+      <Filter>src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\listbox.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\combobox.cpp">
+      <Filter>src\win32\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\button.cpp">
+      <Filter>src\win32\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\painter.cpp">
+      <Filter>src\win32\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\widget.cpp">
+      <Filter>src\win32\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lineedit.cpp">
+      <Filter>src\win32\Gui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

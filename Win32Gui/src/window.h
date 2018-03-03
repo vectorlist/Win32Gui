@@ -17,6 +17,7 @@ public:
 	virtual~Window();
 
 	virtual void	Create(HWND parent);
+	virtual void	StaticCreate(HWND parent);
 	Window*			GetParentWindow();
 	Rect			GetActiveRect() const;
 	TitleBar*		GetTitleBar() { return mTitlebar; };
@@ -46,7 +47,7 @@ protected:
 	virtual LRESULT HitEvent(UINT msg, WPARAM wp, LPARAM lp);
 
 	virtual LRESULT CALLBACK LocalWndProc(UINT msg, WPARAM wp, LPARAM lp);
-	static LRESULT CALLBACK	 GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
+	static	LRESULT CALLBACK GlobalWndProc(HWND handle, UINT msg, WPARAM wp, LPARAM lp);
 
 	TitleBar*		mTitlebar;
 	Resizer*		mResizer;

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <layout.h>
+#include <button.h>
 
 MainWindow::MainWindow(int w, int h, std::string title, HWND parent)
 	: Window(CENTER_X(w), CENTER_Y(h), w, h, title, parent)
@@ -16,6 +17,9 @@ MainWindow::MainWindow(int x, int y, int w, int h, std::string title, HWND paren
 MainWindow::~MainWindow()
 {
 	SAFE_DELETE(mLayout);
+	SAFE_DELETE(mResizer);
+	SAFE_DELETE(mTitlebar);
+	SAFE_DELETE(mCloseButton);
 }
 
 void MainWindow::PreRegisterClass(WNDCLASS &wc)
@@ -35,6 +39,8 @@ void MainWindow::OnCreateEvent(CREATESTRUCT &cs)
 	
 	mLayout = new HBoxLayout;
 	mLayout->Attach(this);
+
+	mCloseButton = new Button(*this, ButtonType::Close);
 }
 
 void MainWindow::PaintEvent(Painter *painter)
@@ -42,7 +48,10 @@ void MainWindow::PaintEvent(Painter *painter)
 	painter->SetTextColor(RGB(200, 200, 200));
 	painter->SetTextBgColor(painter->GetBrush().Color());
 	painter->SetFont(FONT_SYSTEM);
-	painter->Text(0, 0, TO_WSTRING(GetWindowName()).c_str());
+	//painter->Text(0, 0, TO_WSTRING(GetWindowName()).c_str());
+	Rect rc = mTitlebar->GetTitlebarRect();
+	rc.left = 8;
+	painter->DrawString(GetWindowName().c_str(), rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	
 	LOG << "main window paint" << ENDN;
 }
@@ -62,6 +71,12 @@ void MainWindow::ResizeEevnt(UINT msg, WPARAM wp, LPARAM lp)
 		mLayout->Move(layoutRect);
 		mLayout->UpdateLayout();
 	}
+	if (mTitlebar)
+	{
+		int x = Width() - mCloseButton->GetSize().cx;
+		int y = 0;
+		::MoveWindow(*mCloseButton, x, y, 30, 30, TRUE);
+	}
 }
 
 HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
@@ -72,7 +87,9 @@ HRESULT MainWindow::HitEvent(UINT msg, WPARAM wp, LPARAM lp)
 		result = mResizer->HitEvent(this, lp);
 	}
 	if (mTitlebar) {
-		mTitlebar->HitEvent(lp);
+		if (result == HTCLIENT) {
+			result = mTitlebar->HitEvent(lp);
+		}
 	}
 	return result;
 }

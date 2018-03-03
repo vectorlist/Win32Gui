@@ -40,19 +40,12 @@ void Layout::PreRegisterClass(WNDCLASS & wc)
 
 void Layout::AddWindow(Window *item)
 {
-	//Check childs size and add splitter automaicly
-
-	
 	mWindows.AddElement(this, item);
-	
-	//update and change style as child
 	item->SetParentWindow(*this);
 
 	DWORD style = WS_CHILD | WS_VISIBLE;
 	win::ChangeWindowStyle(*item, style);
 
-	/*Rect activeRect = Rect(0,300,0,400);
-	window->Move(activeRect);*/
 	UpdateLayout();
 }
 
@@ -160,12 +153,6 @@ void HBoxLayout::UpdateLayout()
 		
 		right->Move(spRect.right, spRect.top, wndSize, spRect.Height());
 	}
-
-
-	LOG << "update layouts and childs" << ENDN;
-	//recalc rect then repaint
-	//call WM_PAINT to active rect
-	//::InvalidateRect(mHandle, GetRect(), TRUE);
 }
 
 void LayoutContainer::AddElement(Window* parent, Window *window)

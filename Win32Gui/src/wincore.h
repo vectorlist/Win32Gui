@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <rect.h>
 #include <gdiobj.h>
+#include <colordef.h>
 
 class Window;
 class Painter;

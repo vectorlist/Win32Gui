@@ -2,14 +2,6 @@
 
 #include <Windows.h>
 #include <memory>
-//Bitmap	CreateBitmap, CreateBitmapIndirect, CreateCompatibleBitmap, CreateDIBitmap, CreateDIBSection, CreateDiscardableBitmap	DeleteObject
-//Brush	CreateBrushIndirect, CreateDIBPatternBrush, CreateDIBPatternBrushPt, CreateHatchBrush, CreatePatternBrush, CreateSolidBrush	DeleteObject
-//DC	CreateDC	DeleteDC, ReleaseDC
-//Font	CreateFont, CreateFontIndirect	DeleteObject
-//Memory DC	CreateCompatibleDC	DeleteDC
-//Palette	CreatePalette	DeleteObject
-//Pen and extended pen	CreatePen, CreatePenIndirect, ExtCreatePen	DeleteObject
-//Region	CombineRgn, CreateEllipticRgn, CreateEllipticRgnIndirect, CreatePolygonRgn, CreatePolyPolygonRgn, CreateRectRgn, CreateRectRgnIndirect, CreateRoundRectRgn, ExtCreateRegion, PathToRegion	DeleteObject
 
 #define COLOR_BLACK				Color(0,0,0)
 #define PEN_DEFCOLOR			Color(200,200,200)
@@ -35,7 +27,7 @@ private:
 #define SAFE_DELETE_GDIOBJ(x)	if(x) { ::DeleteObject(x); x = NULL;}
 #define SAFE_DELETE_WND(x)		if(x) { ::DestroyWindow(x); x = NULL;}
 
-	/*----------------------- base gdi object ---------------------*/
+/*----------------------- Base Gdi Object ---------------------*/
 
 class GdiObj
 {
@@ -57,6 +49,9 @@ public:
 
 	COLORREF Color() const { return mColor; }
 	operator HBRUSH() const { return (HBRUSH)mBrush->mData; }
+	static Brush WindowBrush;
+	static Brush WidgetBrush;
+	static Brush TitleBrush;
 private:
 	std::shared_ptr<GdiObj> mBrush;			//not just gdiobject for color
 	COLORREF mColor;

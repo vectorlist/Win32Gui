@@ -28,3 +28,8 @@ struct KeyEvent
 	WPARAM wp;
 	LPARAM lp;
 };
+
+typedef struct WndEvent
+{
+
+}WndEvent_T, WndEvnetP;
